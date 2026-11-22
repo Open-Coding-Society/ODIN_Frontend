@@ -131,10 +131,10 @@ test('fillSections refuses a list whose section has no items, or an item lacking
 });
 
 test('an item must have its own title and text: the section\'s are never used in their place', () => {
-  const { root } = page([{ name: 'team', items: ['title', 'text'] }]);
-  const section = { name: 'team', title: 'The team', text: 'About the team.' };
-  assert.throws(() => fillSections(root, { sections: [{ ...section, items: [{ text: 'About them.' }] }] }, { imageUrl }), /no usable value for: title/);
-  assert.throws(() => fillSections(root, { sections: [{ ...section, items: [{ title: 'First Person' }] }] }, { imageUrl }), /no usable value for: text/);
+  const { root } = page([{ name: 'facts', items: ['title', 'text'] }]);
+  const section = { name: 'facts', title: 'Some facts', text: 'About the facts.' };
+  assert.throws(() => fillSections(root, { sections: [{ ...section, items: [{ text: 'About it.' }] }] }, { imageUrl }), /no usable value for: title/);
+  assert.throws(() => fillSections(root, { sections: [{ ...section, items: [{ title: 'First fact' }] }] }, { imageUrl }), /no usable value for: text/);
 });
 
 test('fillSections refuses a list the markup gave no template', () => {
