@@ -1,0 +1,59 @@
+{%- comment -%}
+  A drawn headset for the home page: a visor with two lenses whose eyes look around, a scan line that
+  runs across the glass and three lights that blink. It stands in for a product photo, so nothing is
+  taken from ODIN's site. It is decoration: the words beside it say what the product does. Every
+  color is set in sass/main.scss from the theme. Its ids start with odin-hs- and it is used once a page.
+{%- endcomment -%}
+<svg class="odin__hs" viewBox="0 0 420 290" focusable="false" aria-hidden="true">
+  <defs>
+    <linearGradient id="odin-hs-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" class="odin__hs-stop odin__hs-stop--top"/>
+      <stop offset="1" class="odin__hs-stop odin__hs-stop--bottom"/>
+    </linearGradient>
+    <linearGradient id="odin-hs-scan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" class="odin__hs-stop odin__hs-stop--clear"/>
+      <stop offset="0.5" class="odin__hs-stop odin__hs-stop--scan"/>
+      <stop offset="1" class="odin__hs-stop odin__hs-stop--clear"/>
+    </linearGradient>
+    <radialGradient id="odin-hs-iris" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" class="odin__hs-stop odin__hs-stop--core"/>
+      <stop offset="0.7" class="odin__hs-stop odin__hs-stop--iris"/>
+      <stop offset="1" class="odin__hs-stop odin__hs-stop--rim"/>
+    </radialGradient>
+    <clipPath id="odin-hs-visor">
+      <rect x="80" y="96" width="260" height="120" rx="52"/>
+    </clipPath>
+  </defs>
+  <path class="odin__hs-strap" d="M64 160 C 14 158, 6 70, 74 60"/>
+  <path class="odin__hs-strap" d="M356 160 C 406 158, 414 70, 346 60"/>
+  <path class="odin__hs-strap odin__hs-strap--top" d="M128 76 C 166 16, 254 16, 292 76"/>
+  <rect class="odin__hs-body" x="58" y="72" width="304" height="168" rx="74"/>
+  <rect class="odin__hs-visor" x="80" y="96" width="260" height="120" rx="52"/>
+  <g clip-path="url(#odin-hs-visor)">
+    <g class="odin__hs-lens">
+      <circle class="odin__hs-ring odin__hs-ring--dash" cx="158" cy="156" r="46"/>
+      <circle class="odin__hs-ring" cx="158" cy="156" r="37"/>
+      <g class="odin__hs-eye">
+        <circle class="odin__hs-iris" cx="158" cy="156" r="18"/>
+        <circle class="odin__hs-pupil" cx="158" cy="156" r="7.5"/>
+        <circle class="odin__hs-glint" cx="152" cy="150" r="3"/>
+      </g>
+    </g>
+    <g class="odin__hs-lens">
+      <circle class="odin__hs-ring odin__hs-ring--dash" cx="262" cy="156" r="46"/>
+      <circle class="odin__hs-ring" cx="262" cy="156" r="37"/>
+      <g class="odin__hs-eye">
+        <circle class="odin__hs-iris" cx="262" cy="156" r="18"/>
+        <circle class="odin__hs-pupil" cx="262" cy="156" r="7.5"/>
+        <circle class="odin__hs-glint" cx="256" cy="150" r="3"/>
+      </g>
+    </g>
+    <rect class="odin__hs-scan" x="80" y="96" width="260" height="5"/>
+  </g>
+  <path class="odin__hs-shine" d="M104 108 Q 136 99 178 101"/>
+  <g class="odin__hs-leds">
+    <circle cx="196" cy="86" r="3.5"/>
+    <circle cx="210" cy="86" r="3.5"/>
+    <circle cx="224" cy="86" r="3.5"/>
+  </g>
+</svg>

@@ -1,31 +1,51 @@
 {%- comment -%}
-  The contact block. Its heading, labels and partner logo come from the backend's contact page, and
-  the phone number, email and address from the site basics. The page that includes it loads both
-  and hands them to showPage.
+  The contact block: a card each for the phone number, the email and the address, then the partner.
+  The labels, the heading and the partner come from the backend's contact page, and the number,
+  email and address from the site basics. The page that includes it loads both and hands them to
+  showPage. A page whose own heading already says "Contact Us" includes it with heading=false.
+  The partner's link is the one the details section holds; it is named by the partner's title.
 {%- endcomment -%}
-<div class="ocs__card" id="contact">
-  <div data-odin-section="details">
-    <h2 data-odin-field="title"></h2>
-  </div>
-  <div class="ocs__split odin__row">
-    <div class="ocs__stack">
-      <p class="ocs__text" data-odin-section="phone">
-        <strong data-odin-field="title"></strong>
-        <a data-odin-basic="phone" data-odin-opens="tel"></a>
-      </p>
-      <p class="ocs__text" data-odin-section="email">
-        <strong data-odin-field="title"></strong>
-        <a data-odin-basic="email" data-odin-opens="mailto"></a>
-      </p>
-      <p class="ocs__text" data-odin-section="address">
-        <strong data-odin-field="title"></strong>
-        <span data-odin-basic="address"></span>
-      </p>
+<section class="odin__section" id="contact">
+  <div class="odin__wrap">
+    {%- unless include.heading == false %}
+    <div class="odin__head" data-odin-reveal data-odin-section="details">
+      <h2 class="odin__h2" data-odin-field="title"></h2>
     </div>
-    <div data-odin-section="details">
-      <a data-odin-href="link" target="_blank" rel="noopener noreferrer">
-        <img class="odin__partner" data-odin-image data-odin-backdrop alt="">
-      </a>
+    {%- endunless %}
+    <div class="odin__contact-grid">
+      <div class="odin__card odin__contact" data-odin-reveal data-odin-glow data-odin-section="phone">
+        <span class="odin__icon" aria-hidden="true">
+          <svg class="odin__glyph" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M5.2 3.8h3l2 5-2.4 1.5a11 11 0 0 0 5.9 5.9l1.5-2.4 5 2v3a2 2 0 0 1-2 2A16.2 16.2 0 0 1 3.2 5.8a2 2 0 0 1 2-2z"/></svg>
+        </span>
+        <strong class="odin__contact-label" data-odin-field="title"></strong>
+        <a class="odin__contact-value" data-odin-basic="phone" data-odin-opens="tel"></a>
+      </div>
+      <div class="odin__card odin__contact" data-odin-reveal data-odin-glow data-odin-section="email">
+        <span class="odin__icon" aria-hidden="true">
+          <svg class="odin__glyph" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.6 6.6 12 13l8.4-6.4"/></svg>
+        </span>
+        <strong class="odin__contact-label" data-odin-field="title"></strong>
+        <a class="odin__contact-value" data-odin-basic="email" data-odin-opens="mailto"></a>
+      </div>
+      <div class="odin__card odin__contact" data-odin-reveal data-odin-glow data-odin-section="address">
+        <span class="odin__icon" aria-hidden="true">
+          <svg class="odin__glyph" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        </span>
+        <strong class="odin__contact-label" data-odin-field="title"></strong>
+        <span class="odin__contact-value" data-odin-basic="address"></span>
+      </div>
+    </div>
+    <div class="odin__partner" data-odin-reveal>
+      <div class="odin__partner-copy" data-odin-section="partner">
+        <span class="odin__partner-kicker" data-odin-field="kicker"></span>
+        <strong class="odin__partner-name" id="odin-partner-name" data-odin-field="title"></strong>
+        <span class="odin__partner-text" data-odin-field="text"></span>
+      </div>
+      <div data-odin-section="details">
+        <a class="odin__round-link" data-odin-href="link" target="_blank" rel="noopener noreferrer" aria-labelledby="odin-partner-name">
+          <svg class="odin__glyph" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
     </div>
   </div>
-</div>
+</section>

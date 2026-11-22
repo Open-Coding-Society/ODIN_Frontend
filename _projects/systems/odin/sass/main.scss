@@ -1,11 +1,38 @@
-// The ODIN Diagnostics styles. The pages sit in the OCS frame and are built from the shared OCS
-// grammar, so this file holds only the few things those lack. Every color here is a theme
-// variable, so the pages follow the visitor's theme.
+// The ODIN Diagnostics styles. The pages sit in the OCS frame (its head and top bar are untouched);
+// everything here is scoped to .odin, the box the ODIN layout puts around a page and its footer.
+//
+// Every color comes from the visitor's theme, so the pages follow the Preferences page:
+//   --odin-a1  the theme's accent
+//   --odin-a2  the accent with its hue turned 60 degrees (relative color syntax)
+//   --odin-a3  the accent with its hue turned back 50 degrees
+// js/palette.js turns the hue by the same amounts for the drawings, so the canvas art and the page
+// match. Tints are color-mix() over those and the theme's text and panel colors. Headlines use Sora
+// (loaded by layouts/site.html); body text keeps the theme's font.
+
+// The angle the moving gradient borders turn through
+@property --odin-turn {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
 
 .odin {
-  // The shared layout gives a wide page the full window. This keeps ODIN's lines a readable length.
-  max-width: 70rem;
-  margin: 0 auto;
+  --odin-a1: var(--pref-accent-color);
+  --odin-a2: hsl(from var(--pref-accent-color) calc(h + 60) s l);
+  --odin-a3: hsl(from var(--pref-accent-color) calc(h - 50) s l);
+  --odin-ink: var(--pref-text-color);
+  --odin-soft: color-mix(in srgb, var(--pref-text-color) 74%, transparent);
+  --odin-faint: color-mix(in srgb, var(--pref-text-color) 13%, transparent);
+  --odin-glass: color-mix(in srgb, var(--panel, var(--pref-bg-color)) 62%, transparent);
+  --odin-solid: color-mix(in srgb, var(--panel, var(--pref-bg-color)) 92%, var(--pref-bg-color));
+  --odin-display: 'Sora', var(--pref-font-family), system-ui, sans-serif;
+  --odin-radius: 1.6rem;
+  --odin-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  color: var(--odin-ink);
+  font-family: var(--pref-font-family);
 
   // A part waiting for the backend is marked hidden. Without this, a class that sets display
   // would show it anyway.
@@ -13,8 +40,8 @@
     display: none;
   }
 
-  // Other stylesheets on the site hide every h1, give it a green glow, and color h2 and h3 with
-  // fixed colors. ODIN pages have one h1 each, and their headings take the theme's text color.
+  // Other stylesheets on the site hide every h1, give it a glow, color headings with fixed colors
+  // and lay an h2 out as a flex row. ODIN's headings take the theme's text color and wrap normally.
   h1 {
     display: block;
     text-shadow: none;
@@ -22,105 +49,1655 @@
 
   h1,
   h2,
-  h3 {
-    color: var(--pref-text-color);
-  }
-
-  // The site lays an h2 out as a flex row, which stops a long word from wrapping on a phone
-  h2,
-  h3 {
+  h3,
+  h4 {
     display: block;
+    color: var(--odin-ink);
     overflow-wrap: anywhere;
   }
 
-  // ocs__split leaves a gap above itself for the text it usually follows. One that opens a card
-  // has the card's own padding there.
-  .ocs__card > .ocs__split:first-child {
-    margin-top: 0;
+  h3,
+  h4 {
+    font-family: var(--odin-display);
+    letter-spacing: -0.01em;
   }
 }
 
-// A page's main heading, large enough to lead the page
-.odin__title {
-  margin: 0 0 1rem;
-  font-size: clamp(2.5rem, 6vw, 4.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+// ---------------------------------------------------------------------------------------------
+// The glow behind the page: three soft blobs of the theme's colors that drift very slowly.
+
+.odin__aurora {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  // The page column is narrower than the window, so the glow fades out at its sides and top instead
+  // of stopping in a straight line. It stays inside .odin, so the top bar is never tinted.
+  -webkit-mask-image: linear-gradient(90deg, transparent, var(--odin-ink) 5rem, var(--odin-ink) calc(100% - 5rem), transparent), linear-gradient(transparent, var(--odin-ink) 10rem);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, var(--odin-ink) 5rem, var(--odin-ink) calc(100% - 5rem), transparent), linear-gradient(transparent, var(--odin-ink) 10rem);
+  mask-composite: intersect;
+
+  &::before,
+  &::after,
+  span {
+    content: '';
+    position: absolute;
+    width: 52rem;
+    height: 52rem;
+    border-radius: 50%;
+    // The gradients fade out on their own. A blur filter this large is clipped to a hard-edged box
+    // by some browsers, so none is used.
+    opacity: 0.2;
+    animation: odin-drift 28s ease-in-out infinite alternate;
+  }
+
+  &::before {
+    top: -18rem;
+    left: -14rem;
+    background: radial-gradient(circle closest-side, var(--odin-a1), color-mix(in srgb, var(--odin-a1) 30%, transparent) 35%, color-mix(in srgb, var(--odin-a1) 8%, transparent) 65%, transparent);
+  }
+
+  &::after {
+    top: 22%;
+    right: -20rem;
+    background: radial-gradient(circle closest-side, var(--odin-a2), color-mix(in srgb, var(--odin-a2) 30%, transparent) 35%, color-mix(in srgb, var(--odin-a2) 8%, transparent) 65%, transparent);
+    animation-duration: 34s;
+    animation-direction: alternate-reverse;
+  }
+
+  span {
+    top: 58%;
+    left: 10%;
+    background: radial-gradient(circle closest-side, var(--odin-a3), color-mix(in srgb, var(--odin-a3) 30%, transparent) 35%, color-mix(in srgb, var(--odin-a3) 8%, transparent) 65%, transparent);
+    opacity: 0.14;
+    animation-duration: 40s;
+  }
 }
 
-// Words beside a photo sit level with its middle
-.ocs__split.odin__row {
+// ---------------------------------------------------------------------------------------------
+// Shared building blocks
+
+.odin__wrap {
+  width: 100%;
+  max-width: 74rem;
+  margin: 0 auto;
+}
+
+// Words for screen readers only, such as a figure whose visible copy is still counting up
+.odin__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.odin__section {
+  position: relative;
+  padding: clamp(3rem, 6vw, 5rem) 1.25rem;
+  scroll-margin-top: 4.5rem;
+
+  // A band with a faint wash of the accent, to set a section apart. It fades out on every side, so
+  // it has no edge where the page column ends.
+  &--tint {
+    background: radial-gradient(ellipse 75% 65% at 50% 50%, color-mix(in srgb, var(--odin-a1) 8%, transparent), color-mix(in srgb, var(--odin-a2) 4%, transparent) 55%, transparent 80%);
+  }
+}
+
+// The loading and unavailable messages. The padding is on the messages, so the empty box takes no
+// room once the page is showing.
+.odin__status {
+  padding: 0 1.25rem;
+
+  > [data-odin-state] {
+    padding: 4rem 0;
+  }
+}
+
+.odin__loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--odin-soft);
+}
+
+.odin__head {
+  max-width: 58rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.odin__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--odin-a1) 35%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--odin-a1) 12%, transparent);
+  color: var(--odin-a1);
+  font-family: var(--odin-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+// A small dot that pulses, beside a kicker or a loading message
+.odin__pulse {
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--odin-a3);
+  animation: odin-pulse 2s ease-out infinite;
+}
+
+// A page's main heading: large, tight and filled with a slowly moving gradient
+.odin .odin__title {
+  margin: 0 0 1.5rem;
+  font-family: var(--odin-display);
+  font-size: clamp(3.4rem, 9vw, 7.25rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  background: linear-gradient(105deg, var(--odin-ink) 15%, var(--odin-a1) 42%, var(--odin-a2) 58%, var(--odin-ink) 85%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  // The fill, not the color, is cleared, so a theme that forces the text color can't hide the gradient
+  -webkit-text-fill-color: transparent;
+  animation: odin-shine 10s linear infinite;
+}
+
+.odin .odin__h2 {
+  margin: 0 0 1rem;
+  font-family: var(--odin-display);
+  font-size: clamp(2rem, 4.4vw, 3.3rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.odin .odin__h3 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+}
+
+.odin__lead {
+  margin: 0;
+  color: var(--odin-soft);
+  font-size: clamp(1.08rem, 1.6vw, 1.3rem);
+  line-height: 1.7;
+}
+
+.odin__text {
+  margin: 0 0 1.75rem;
+  color: var(--odin-soft);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+// A see-through card with a soft border. With data-odin-glow, a light follows the pointer across it.
+.odin__card {
+  position: relative;
+  // Its own layer, so the pointer's light sits between the card's background and its words
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(1.5rem, 2.6vw, 2.1rem);
+  border: 1px solid var(--odin-faint);
+  border-radius: var(--odin-radius);
+  background: var(--odin-glass);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: transform 0.45s var(--odin-ease), border-color 0.45s, box-shadow 0.45s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(28rem circle at var(--odin-mx, 50%) var(--odin-my, 0%), color-mix(in srgb, var(--odin-a1) 18%, transparent), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.45s;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--odin-a1) 45%, transparent);
+    box-shadow: 0 24px 60px -30px color-mix(in srgb, var(--odin-a1) 55%, transparent);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  h3 {
+    margin: 1.1rem 0 0.5rem;
+    font-size: 1.3rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--odin-soft);
+    line-height: 1.65;
+  }
+}
+
+// A rounded square that holds an icon
+.odin__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: 1px solid color-mix(in srgb, var(--odin-a1) 30%, transparent);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--odin-a1) 20%, transparent), color-mix(in srgb, var(--odin-a2) 12%, transparent));
+  color: var(--odin-a1);
+}
+
+// A line icon drawn with the text color around it
+.odin__glyph {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+// Buttons
+.odin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2.25rem;
+}
+
+.odin__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.65rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--odin-display);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.35s var(--odin-ease), box-shadow 0.35s, background-position 0.6s, border-color 0.35s;
+
+  &::after {
+    content: '\2192';
+    transition: transform 0.35s var(--odin-ease);
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    text-decoration: none;
+
+    &::after {
+      transform: translateX(4px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--odin-a1);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    cursor: progress;
+    opacity: 0.6;
+    transform: none;
+  }
+
+  &--primary {
+    background: linear-gradient(120deg, var(--odin-a1), var(--odin-a2), var(--odin-a1));
+    background-size: 200% 100%;
+    box-shadow: 0 14px 34px -14px color-mix(in srgb, var(--odin-a1) 80%, transparent);
+    color: var(--pref-bg-color);
+    // Some themes force every link's color with !important, which would paint the words the same
+    // color as the button. The fill is what the words are drawn with, and a theme doesn't force it.
+    -webkit-text-fill-color: var(--pref-bg-color);
+
+    &:hover {
+      background-position: 100% 0;
+      color: var(--pref-bg-color);
+    }
+  }
+
+  &--ghost {
+    border-color: var(--odin-faint);
+    background: var(--odin-glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--odin-ink);
+
+    &:hover {
+      border-color: var(--odin-a1);
+      color: var(--odin-ink);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: the hero
+
+.odin__hero {
+  position: relative;
+  padding: clamp(3rem, 7vw, 6rem) 1.25rem clamp(4rem, 8vw, 6.5rem);
+
+  // A fine grid behind the hero that fades out toward the edges
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(var(--odin-faint) 1px, transparent 1px), linear-gradient(90deg, var(--odin-faint) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse at 70% 45%, var(--odin-ink) 5%, transparent 68%);
+    mask-image: radial-gradient(ellipse at 70% 45%, var(--odin-ink) 5%, transparent 68%);
+    opacity: 0.55;
+  }
+}
+
+.odin__hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
 }
 
-// A photo's frame. Its shape is set here, so the page does not jump when the photo arrives. Its
-// width is set too: in a row that stretches its sides the shape would be worked out from the
-// height, and a tall column of words would push the frame out of its own column.
-.ocs__image-frame.odin__photo {
-  align-self: start;
+.odin__hero-copy .odin__lead {
+  max-width: 34rem;
+}
+
+.odin__hero-visual {
+  position: relative;
+  aspect-ratio: 1 / 1;
   width: 100%;
-  // The shared cover frame has no padding, but its phone rule comes later and gives some back
-  padding: 0;
-  aspect-ratio: 3 / 2;
-
-  &--product {
-    aspect-ratio: 4 / 3;
-  }
-
-  &--strip {
-    aspect-ratio: 13 / 6;
-  }
-
-  &--square {
-    aspect-ratio: 1 / 1;
-  }
 }
 
-.odin__row .odin__photo {
-  align-self: center;
-}
-
-// Four numbers in a row on a wide screen and two on a narrower one. ocs__stats alone fits in as
-// many columns as it can, and between a phone and a wide screen those are too narrow for a long
-// figure, which then breaks in the middle. On a phone it already puts them in one column.
-@media (min-width: 521px) {
-  .ocs__stats.odin__stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 62rem) {
-  .ocs__stats.odin__stats {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-// ODIN's logo is a wide wordmark, so it is sized by its height
-.odin__logo {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: 1.5rem;
-  // The site rounds every image's corners, which would cut into the logo
-  border-radius: 0;
-}
-
-// Text the backend sends with line breaks in it
-.odin__lines {
-  white-space: pre-line;
-}
-
-// The partner's logo is white on a clear background, so a light theme would hide it. The script
-// says whether what is behind it is light, and then the logo is turned dark.
-.odin__partner {
+.odin__eye {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  max-width: 9rem;
+  height: 100%;
+}
+
+// Two rings behind the eye that turn in opposite directions, their borders running through the
+// theme's three colors
+.odin__ring {
+  position: absolute;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: conic-gradient(from var(--odin-turn), var(--odin-a1), transparent 30%, var(--odin-a2) 55%, transparent 80%, var(--odin-a1)) border-box;
+  -webkit-mask: linear-gradient(var(--odin-ink) 0 0) padding-box, linear-gradient(var(--odin-ink) 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(var(--odin-ink) 0 0) padding-box exclude, linear-gradient(var(--odin-ink) 0 0);
+  animation: odin-turn 14s linear infinite;
+  opacity: 0.55;
+
+  &--outer {
+    inset: 1%;
+  }
+
+  &--inner {
+    inset: 9%;
+    animation-duration: 20s;
+    animation-direction: reverse;
+    opacity: 0.35;
+  }
+}
+
+// A small mouse outline at the bottom of the hero whose wheel rolls, hinting to scroll
+.odin__scroll-cue {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  width: 1.5rem;
+  height: 2.4rem;
+  border: 2px solid var(--odin-faint);
+  border-radius: 1rem;
+  transform: translateX(-50%);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0.45rem;
+    left: 50%;
+    width: 0.25rem;
+    height: 0.5rem;
+    border-radius: 1rem;
+    background: var(--odin-a1);
+    transform: translateX(-50%);
+    animation: odin-wheel 1.8s ease-in-out infinite;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: statistics
+
+.odin__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.odin__stat-value {
+  display: block;
+  font-family: var(--odin-display);
+  // Sized from the card's own width, so the longest figure ($131,500,000, about seven of these
+  // letters wide) stays on one line whatever the number of cards in a row. The first size is for a
+  // browser without container sizes.
+  font-size: clamp(1.4rem, 2vw, 2.2rem);
+  font-size: clamp(1.25rem, 13cqi, 2.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  background: linear-gradient(120deg, var(--odin-a1), var(--odin-a2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// A thin bar under each figure that fills when the card comes into view
+.odin__stat-bar {
+  position: relative;
+  display: block;
+  height: 3px;
+  margin: 1.1rem 0 0.9rem;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--odin-faint);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--odin-a1), var(--odin-a3));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.6s var(--odin-ease) 0.25s;
+  }
+}
+
+.odin__stat.is-shown .odin__stat-bar::after,
+.odin__stat:not([data-odin-reveal]) .odin__stat-bar::after {
+  transform: scaleX(1);
+}
+
+// Each figure card is a size container, so its figure can be sized from it
+.odin__stat {
+  container-type: inline-size;
+}
+
+.odin .odin__stat-label {
+  font-size: 0.98rem;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: features, beside the drawn headset
+
+.odin__features {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.odin__feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+// Each feature card holds all four icons; it shows the one for its place in the list
+.odin__feature .odin__glyph {
+  display: none;
+}
+
+@for $place from 1 through 4 {
+  .odin__feature:nth-of-type(4n + #{$place}) .odin__glyph--#{$place},
+  .odin__compare-card:nth-of-type(2n + #{$place}) .odin__glyph--#{$place} {
+    display: block;
+  }
+}
+
+.odin__compare-card .odin__glyph {
+  display: none;
+}
+
+// Little movements inside the icons
+.odin__glyph-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: odin-bar 2.6s var(--odin-ease) infinite;
+
+  &:nth-of-type(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-of-type(3) {
+    animation-delay: 0.4s;
+  }
+}
+
+.odin__glyph-hand {
+  transform-box: view-box;
+  transform-origin: 12px 13.5px;
+  animation: odin-spin 4s steps(12) infinite;
+}
+
+.odin__glyph-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: odin-node 2.4s ease-in-out infinite;
+
+  &:nth-of-type(3) {
+    animation-delay: 0.4s;
+  }
+
+  &:nth-of-type(4) {
+    animation-delay: 0.8s;
+  }
+}
+
+.odin__glyph-look {
+  animation: odin-glance 5s ease-in-out infinite;
+}
+
+// The drawn headset
+.odin__headset {
+  position: relative;
+
+  // A glow on the floor under it
+  &::after {
+    content: '';
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: -6%;
+    height: 14%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--odin-a1) 35%, transparent), transparent);
+    filter: blur(8px);
+    animation: odin-shadow 7s ease-in-out infinite;
+  }
+}
+
+.odin__hs {
+  display: block;
+  width: 100%;
   height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 30px 50px color-mix(in srgb, var(--odin-a1) 30%, transparent));
+  animation: odin-float 7s ease-in-out infinite;
+}
+
+.odin__hs-stop {
+  &--top {
+    stop-color: color-mix(in srgb, var(--panel, var(--pref-bg-color)) 80%, var(--odin-a1));
+  }
+
+  &--bottom {
+    stop-color: var(--pref-bg-color);
+  }
+
+  &--clear {
+    stop-color: color-mix(in srgb, var(--odin-a3) 0%, transparent);
+  }
+
+  &--scan {
+    stop-color: var(--odin-a3);
+  }
+
+  &--core {
+    stop-color: var(--odin-a3);
+  }
+
+  &--iris {
+    stop-color: var(--odin-a1);
+  }
+
+  &--rim {
+    stop-color: var(--odin-a2);
+  }
+}
+
+.odin__hs-strap {
+  fill: none;
+  stroke: color-mix(in srgb, var(--odin-ink) 22%, transparent);
+  stroke-width: 14;
+  stroke-linecap: round;
+
+  &--top {
+    stroke-width: 10;
+    stroke: color-mix(in srgb, var(--odin-ink) 15%, transparent);
+  }
+}
+
+.odin__hs-body {
+  fill: url(#odin-hs-body);
+  stroke: color-mix(in srgb, var(--odin-ink) 25%, transparent);
+  stroke-width: 1.5;
+}
+
+.odin__hs-visor {
+  fill: color-mix(in srgb, var(--pref-bg-color) 88%, var(--odin-a1));
+  stroke: color-mix(in srgb, var(--odin-a1) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+.odin__hs-ring {
+  fill: color-mix(in srgb, var(--odin-a1) 8%, transparent);
+  stroke: color-mix(in srgb, var(--odin-a1) 70%, transparent);
+  stroke-width: 2;
+
+  &--dash {
+    fill: none;
+    stroke: color-mix(in srgb, var(--odin-a2) 60%, transparent);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 9;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: odin-spin 18s linear infinite;
+  }
+}
+
+.odin__hs-iris {
+  fill: url(#odin-hs-iris);
+}
+
+.odin__hs-pupil {
+  fill: var(--pref-bg-color);
+}
+
+.odin__hs-glint {
+  fill: color-mix(in srgb, var(--odin-ink) 85%, transparent);
+}
+
+// Both eyes look around together
+.odin__hs-eye {
+  animation: odin-look 6s ease-in-out infinite;
+}
+
+.odin__hs-scan {
+  fill: url(#odin-hs-scan);
+  animation: odin-scan 3.4s ease-in-out infinite alternate;
+}
+
+.odin__hs-shine {
+  fill: none;
+  stroke: color-mix(in srgb, var(--odin-ink) 35%, transparent);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.odin__hs-leds circle {
+  fill: var(--odin-a3);
+  animation: odin-blink 1.8s ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: how it works and the steps
+
+.odin__how {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.odin__wave {
+  display: block;
+  width: 100%;
+  height: 8.5rem;
+  margin-top: 2rem;
+  border: 1px solid var(--odin-faint);
+  border-radius: 1.1rem;
+  background: color-mix(in srgb, var(--pref-bg-color) 55%, transparent);
+}
+
+.odin__steps {
+  position: relative;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: odin-step;
+
+  // The line down the side, and the part of it that fills up to the active step
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 1.6rem;
+    left: 1.2rem;
+    width: 2px;
+    border-radius: 2px;
+  }
+
+  &::before {
+    bottom: 1.6rem;
+    background: var(--odin-faint);
+  }
+
+  &::after {
+    height: calc((100% - 3.2rem) * var(--odin-progress, 0));
+    background: linear-gradient(var(--odin-a1), var(--odin-a2));
+    transition: height 0.7s var(--odin-ease);
+  }
+}
+
+.odin__step {
+  position: relative;
+  padding: 0.85rem 1rem 0.85rem 3.6rem;
+  border-radius: 1.1rem;
+  cursor: pointer;
+  counter-increment: odin-step;
+  transition: background 0.35s;
+
+  // The step's number in a circle on the line
+  &::before {
+    content: counter(odin-step);
+    position: absolute;
+    top: 0.65rem;
+    left: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 2px solid var(--odin-faint);
+    border-radius: 50%;
+    background: var(--pref-bg-color);
+    color: var(--odin-soft);
+    font-family: var(--odin-display);
+    font-weight: 700;
+    transition: background 0.4s, border-color 0.4s, box-shadow 0.4s, color 0.4s;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--odin-a1);
+    outline-offset: 2px;
+  }
+
+  h4 {
+    margin: 0.35rem 0 0;
+    font-size: 1.12rem;
+  }
+
+  // A step's text opens only while it is the active one. It stays in the page for screen readers.
+  p {
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+    color: var(--odin-soft);
+    line-height: 1.6;
+    opacity: 0;
+    transition: max-height 0.5s var(--odin-ease), opacity 0.4s, margin 0.4s;
+  }
+
+  &.is-done::before {
+    border-color: var(--odin-a1);
+    color: var(--odin-a1);
+  }
+
+  &.is-active {
+    background: color-mix(in srgb, var(--odin-a1) 9%, transparent);
+
+    &::before {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--odin-a1), var(--odin-a2));
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--odin-a1) 20%, transparent);
+      color: var(--pref-bg-color);
+    }
+
+    p {
+      max-height: 9rem;
+      margin-top: 0.4rem;
+      opacity: 1;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: the follow-the-dot demo
+
+.odin__demo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.odin__demo-stage {
+  position: relative;
+  padding: 1px;
+  border-radius: var(--odin-radius);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--odin-a1) 70%, transparent), color-mix(in srgb, var(--odin-a2) 45%, transparent) 45%, var(--odin-faint));
+  box-shadow: 0 40px 90px -45px color-mix(in srgb, var(--odin-a1) 70%, transparent);
+
+  canvas {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: calc(var(--odin-radius) - 1px);
+    background: var(--pref-bg-color);
+    cursor: crosshair;
+    touch-action: pan-y;
+
+    // While a run is on, a finger on the canvas follows the dot instead of scrolling the page
+    &.is-running {
+      touch-action: none;
+    }
+  }
+}
+
+.odin__demo-result {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--odin-faint);
+  border-radius: 1.25rem;
+  background: var(--odin-glass);
+  animation: odin-pop 0.6s var(--odin-ease);
+}
+
+.odin__demo-score {
+  flex: none;
+  font-family: var(--odin-display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(120deg, var(--odin-a1), var(--odin-a2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.odin__demo-label {
+  display: grid;
+  gap: 0.2rem;
+
+  span {
+    color: var(--odin-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: the comparison
+
+.odin__compare {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+
+  // "vs" between the two cards
+  &::after {
+    content: 'vs';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border: 1px solid var(--odin-faint);
+    border-radius: 50%;
+    background: var(--odin-solid);
+    color: var(--odin-soft);
+    font-family: var(--odin-display);
+    font-weight: 700;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.odin__compare-card {
+  &:nth-of-type(2n + 1) {
+    border-style: dashed;
+
+    .odin__icon {
+      border-color: var(--odin-faint);
+      background: var(--odin-faint);
+      color: var(--odin-soft);
+    }
+  }
+
+  // ODIN's card has a gradient border that slowly turns
+  &:nth-of-type(2n) {
+    border-color: transparent;
+    background: linear-gradient(var(--odin-solid), var(--odin-solid)) padding-box, conic-gradient(from var(--odin-turn), var(--odin-a1), var(--odin-a2), var(--odin-a3), var(--odin-a1)) border-box;
+    box-shadow: 0 30px 70px -40px color-mix(in srgb, var(--odin-a1) 70%, transparent);
+    animation: odin-turn 7s linear infinite;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Home: the closing pitch and the FDA notice
+
+.odin__pitch {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4rem);
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  background: linear-gradient(var(--odin-solid), var(--odin-solid)) padding-box, conic-gradient(from var(--odin-turn), var(--odin-a1), var(--odin-a2), var(--odin-a3), var(--odin-a1)) border-box;
+  box-shadow: 0 50px 120px -60px color-mix(in srgb, var(--odin-a2) 70%, transparent);
+  text-align: center;
+  animation: odin-turn 9s linear infinite;
+
+  .odin__h2 {
+    max-width: 22ch;
+    margin: 0 auto 1.25rem;
+  }
+
+  .odin__lead {
+    max-width: 62ch;
+    margin: 0 auto;
+  }
+}
+
+.odin__notice {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  max-width: 56rem;
+  margin: 2.5rem auto 0;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--odin-a3) 35%, transparent);
+  border-radius: 1.25rem;
+  background: color-mix(in srgb, var(--odin-a3) 8%, transparent);
+
+  .odin__glyph {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    color: var(--odin-a3);
+  }
+
+  h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--odin-soft);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// The contact block (home and Contact Us)
+
+.odin__contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.odin__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .odin__icon {
+    margin-bottom: 0.9rem;
+  }
+}
+
+.odin .odin__contact-label {
+  color: var(--odin-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.odin .odin__contact-value {
+  color: var(--odin-ink);
+  font-family: var(--odin-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.odin a.odin__contact-value:hover {
+  color: var(--odin-a1);
+}
+
+.odin__partner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding: 1.4rem 1.75rem;
+  border: 1px dashed var(--odin-faint);
+  border-radius: var(--odin-radius);
+}
+
+.odin__partner-copy {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.odin .odin__partner-kicker {
+  color: var(--odin-a1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.odin .odin__partner-name {
+  font-family: var(--odin-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.odin .odin__partner-text {
+  color: var(--odin-soft);
+}
+
+// A round link with an arrow, which turns to the accent when pointed at
+.odin__round-link {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border: 1px solid var(--odin-faint);
+  border-radius: 50%;
+  color: var(--odin-ink);
+  transition: background 0.3s, color 0.3s, transform 0.35s var(--odin-ease), border-color 0.3s;
+
+  &:hover,
+  &:focus-visible {
+    border-color: transparent;
+    background: linear-gradient(135deg, var(--odin-a1), var(--odin-a2));
+    color: var(--pref-bg-color);
+    transform: rotate(45deg);
+
+    // The arrow is drawn in the page color, not the link color a theme may force
+    .odin__glyph {
+      stroke: var(--pref-bg-color);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// About and Contact Us: the page header over the moving network
+
+.odin__page-hero {
+  position: relative;
+  padding: clamp(4.5rem, 11vw, 8.5rem) 1.25rem clamp(2.5rem, 6vw, 4rem);
+
+  .odin__lead {
+    max-width: 38rem;
+  }
+}
+
+.odin__network {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(var(--odin-ink) 55%, transparent);
+  mask-image: linear-gradient(var(--odin-ink) 55%, transparent);
+}
+
+// About: the mission beside turning rings
+.odin__mission {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+
+.odin .odin__mission-text {
+  margin: 0;
+  color: var(--odin-soft);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  line-height: 1.85;
+  white-space: pre-line;
+
+  // The mission's opening line leads in larger, in the headline font
+  &::first-line {
+    color: var(--odin-ink);
+    font-family: var(--odin-display);
+    font-size: 1.25em;
+    font-weight: 600;
+  }
+}
+
+.odin__orbit {
+  position: relative;
+  width: 100%;
+  max-width: 24rem;
   margin: 0 auto;
   aspect-ratio: 1 / 1;
+}
 
-  &[data-odin-backdrop="light"] {
-    filter: invert(1);
+.odin__orbit-ring {
+  position: absolute;
+  border: 1px solid var(--odin-faint);
+  border-radius: 50%;
+  animation: odin-spin 24s linear infinite;
+
+  // A bright point that rides each ring
+  &::after {
+    content: '';
+    position: absolute;
+    top: -0.35rem;
+    left: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--odin-a1);
+    box-shadow: 0 0 18px var(--odin-a1);
+    transform: translateX(-50%);
+  }
+
+  &--1 {
+    inset: 0;
+  }
+
+  &--2 {
+    inset: 14%;
+    border-style: dashed;
+    animation-duration: 16s;
+    animation-direction: reverse;
+
+    &::after {
+      background: var(--odin-a2);
+      box-shadow: 0 0 18px var(--odin-a2);
+    }
+  }
+
+  &--3 {
+    inset: 28%;
+    animation-duration: 10s;
+
+    &::after {
+      background: var(--odin-a3);
+      box-shadow: 0 0 18px var(--odin-a3);
+    }
+  }
+}
+
+.odin__orbit-core {
+  position: absolute;
+  inset: 38%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--odin-a1) 30%, transparent), transparent 70%);
+
+  .odin__mark {
+    width: 100%;
+    height: auto;
+  }
+}
+
+// About: the pillars, numbered 01, 02, 03
+.odin__pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  counter-reset: odin-pillar;
+}
+
+.odin__pillar {
+  display: flex;
+  flex-direction: column;
+  counter-increment: odin-pillar;
+
+  // The number shows first, above the title
+  &::after {
+    content: '0' counter(odin-pillar);
+    display: block;
+    order: -1;
+    font-family: var(--odin-display);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(120deg, var(--odin-a1), var(--odin-a2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.85;
+  }
+
+  h3 {
+    margin-top: 1rem;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// The mark and the footer
+
+.odin__mark {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.odin__mark-lid {
+  fill: color-mix(in srgb, var(--odin-a1) 12%, transparent);
+  stroke: var(--odin-a1);
+  stroke-width: 2.2;
+}
+
+.odin__mark-iris {
+  fill: var(--odin-a2);
+}
+
+.odin__mark-pupil {
+  fill: var(--pref-bg-color);
+}
+
+.odin__mark-glint {
+  fill: var(--odin-ink);
+}
+
+.odin__footer {
+  position: relative;
+  margin-top: 3rem;
+  padding: 3.5rem 1.25rem 2rem;
+  border-top: 1px solid var(--odin-faint);
+  background: radial-gradient(ellipse 70% 100% at 50% 100%, color-mix(in srgb, var(--odin-a1) 10%, transparent), transparent 75%);
+}
+
+.odin__footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.odin__footer-brand {
+  max-width: 26rem;
+}
+
+.odin .odin__wordmark {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  color: var(--odin-ink);
+  font-family: var(--odin-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.odin .odin__footer-tagline {
+  margin: 0.75rem 0 0;
+  color: var(--odin-soft);
+  line-height: 1.6;
+}
+
+.odin__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+
+  a {
+    padding: 0.55rem 1.05rem;
+    border: 1px solid var(--odin-faint);
+    border-radius: 999px;
+    color: var(--odin-ink);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--odin-a1);
+      background: color-mix(in srgb, var(--odin-a1) 10%, transparent);
+      color: var(--odin-ink);
+    }
+  }
+}
+
+.odin__footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--odin-faint);
+
+  p {
+    margin: 0;
+    color: var(--odin-soft);
+    font-size: 0.88rem;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Parts that rise into view as the page scrolls (js/effects.js adds odin--motion and is-shown).
+// Cards in a row come in one after another.
+
+.odin--motion [data-odin-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--odin-ease), transform 0.9s var(--odin-ease);
+
+  &.is-shown {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@for $place from 2 through 6 {
+  .odin--motion .odin__card[data-odin-reveal]:nth-of-type(#{$place}) {
+    transition-delay: #{($place - 1) * 0.09}s;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Narrower screens
+
+@media (max-width: 62rem) {
+  .odin__hero-grid,
+  .odin__features,
+  .odin__how,
+  .odin__demo,
+  .odin__mission {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .odin__hero-visual {
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+
+  .odin__headset {
+    max-width: 30rem;
+    margin: 0 auto;
+  }
+
+  .odin__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .odin__contact-grid,
+  .odin__pillars {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .odin__orbit {
+    max-width: 18rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .odin__stats,
+  .odin__feature-grid,
+  .odin__compare {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .odin__compare::after {
+    display: none;
+  }
+
+  .odin__actions .odin__btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .odin__actions > span {
+    width: 100%;
+  }
+
+  .odin__scroll-cue {
+    display: none;
+  }
+}
+
+// A visitor who asks for less motion gets everything in place, with nothing moving by itself
+@media (prefers-reduced-motion: reduce) {
+  .odin *,
+  .odin *::before,
+  .odin *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .odin--motion [data-odin-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// High-contrast modes draw text in the system's colors, so the gradient fills are turned off
+@media (forced-colors: active) {
+  .odin .odin__title,
+  .odin__stat-value,
+  .odin__demo-score,
+  .odin__pillar::after {
+    -webkit-text-fill-color: currentColor;
+    background: none;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Keyframes
+
+@keyframes odin-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+
+  to {
+    transform: translate(6rem, 4rem) scale(1.15);
+  }
+}
+
+@keyframes odin-shine {
+  from {
+    background-position: 0% 50%;
+  }
+
+  to {
+    background-position: 260% 50%;
+  }
+}
+
+@keyframes odin-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--odin-a3) 70%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0.75rem color-mix(in srgb, var(--odin-a3) 0%, transparent);
+  }
+}
+
+@keyframes odin-turn {
+  to {
+    --odin-turn: 360deg;
+  }
+}
+
+@keyframes odin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes odin-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes odin-shadow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scaleX(0.85);
+  }
+}
+
+@keyframes odin-look {
+  0%,
+  12%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  20%,
+  32% {
+    transform: translate(-11px, -3px);
+  }
+
+  40%,
+  52% {
+    transform: translate(11px, -4px);
+  }
+
+  60%,
+  72% {
+    transform: translate(7px, 7px);
+  }
+
+  80%,
+  90% {
+    transform: translate(-7px, 5px);
+  }
+}
+
+@keyframes odin-scan {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(115px);
+  }
+}
+
+@keyframes odin-blink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes odin-bar {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+
+@keyframes odin-node {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes odin-glance {
+  0%,
+  40%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50%,
+  60% {
+    transform: translateX(-1px);
+  }
+
+  70%,
+  80% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes odin-wheel {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0.7rem);
+  }
+}
+
+@keyframes odin-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

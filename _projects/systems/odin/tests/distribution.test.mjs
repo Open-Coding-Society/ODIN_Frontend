@@ -171,7 +171,11 @@ const SECTION_PARTS = ['kicker', 'title', 'text', 'action'];
 // An item of a list has these two parts
 const ITEM_PARTS = ['title', 'text'];
 // The sections the backend's pages have, by name. A page may only mark one of these.
-const BACKEND_SECTIONS = ['hero', 'statistics', 'features', 'how_it_works', 'pitch', 'fda', 'intro', 'mission', 'details', 'phone', 'email', 'address'];
+const BACKEND_SECTIONS = [
+  'hero', 'statistics', 'features', 'how_it_works', 'steps', 'demo', 'compare', 'pitch', 'fda',
+  'intro', 'mission', 'pillars',
+  'details', 'phone', 'email', 'address', 'partner',
+];
 
 test('each page has all three state blocks', () => {
   for (const name of readdirSync(new URL('pages/', system)).filter((file) => file.endsWith('.md'))) {
@@ -216,10 +220,12 @@ test('the pages and the contact block name only parts the backend sends', () => 
   }
 });
 
-// The team asked that the site not list its people.
+// The team asked that the site not list its people. The About page's one list is the pillars.
 test('the About page lists no team', () => {
   const about = readFileSync(new URL('pages/about.md', system), 'utf8');
-  assert.ok(!about.includes('data-odin-items'), 'pages/about.md holds a list');
+  assert.equal((about.match(/data-odin-items/g) || []).length, 1, 'pages/about.md holds a list besides the pillars');
+  const pillars = about.slice(about.indexOf('data-odin-section="pillars"'));
+  assert.ok(about.includes('data-odin-section="pillars"') && pillars.includes('data-odin-items'), 'the About page\'s list is not the pillars');
   assert.ok(!about.includes('data-odin-section="team"'), 'pages/about.md marks the team section');
 });
 
@@ -255,8 +261,9 @@ test('each page loads the backend pages whose sections it shows', () => {
   assert.deepEqual(loads('home.md'), ['contact', 'home', 'site']);
   assert.deepEqual(loads('about.md'), ['about']);
   assert.deepEqual(loads('contact.md'), ['contact', 'site']);
+  // Contact Us leaves out the block's own heading, because its page heading says the same
   for (const name of ['home.md', 'contact.md']) {
-    assert.match(readFileSync(new URL(`pages/${name}`, system), 'utf8'), /\{% include projects\/odin\/contact\.html %\}/, `${name} does not include the contact block`);
+    assert.match(readFileSync(new URL(`pages/${name}`, system), 'utf8'), /\{% include projects\/odin\/contact\.html( heading=false)? %\}/, `${name} does not include the contact block`);
   }
 });
 

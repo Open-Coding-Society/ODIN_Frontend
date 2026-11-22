@@ -4,10 +4,16 @@ layout: opencs
 {%- comment -%}
   The frame of every ODIN Diagnostics page. It is the OCS frame itself: the shared opencs layout
   gives the head, the top bar with the site menu and sign-in, and the page column. This layout adds
-  ODIN's footer and the script that fills the parts the backend sends. The menu is the OCS one,
-  minima.nav_pages in _config.yml.
+  ODIN's headline font (Sora), a slow glow of the theme's colors behind the page, ODIN's footer and
+  the script that fills the parts the backend sends. The menu is the OCS one, minima.nav_pages in
+  _config.yml. Everything ODIN adds sits inside .odin, so the top bar looks the same as on every
+  other OCS page.
 {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap">
 <div class="odin">
+  <div class="odin__aurora" aria-hidden="true"><span></span></div>
   {{ content }}
   {%- include projects/odin/footer.html -%}
 </div>
