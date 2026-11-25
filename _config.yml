@@ -31,6 +31,7 @@ odin:
     how_it_works: "/how-it-works/"
     about: "/about/"
     contact: "/contact/"
+    not_found: "/404.html"
 
 # Build settings
 # --------------

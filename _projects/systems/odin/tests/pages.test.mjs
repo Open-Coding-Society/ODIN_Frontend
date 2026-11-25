@@ -42,7 +42,7 @@ function contextFor(page) {
 
 // Every path a file's marks ask for, as [mark, path].
 function paths(text) {
-  return [...text.matchAll(/\bdata-odin-(text|paragraphs|src|alt|content|href|tel|mail|route|current|if|each)="([^"]+)"/g)]
+  return [...text.matchAll(/\bdata-odin-(text|paragraphs|src|alt|image-href|content|href|tel|mail|route|current|if|each)="([^"]+)"/g)]
     .map((match) => [match[1], match[2]]);
 }
 

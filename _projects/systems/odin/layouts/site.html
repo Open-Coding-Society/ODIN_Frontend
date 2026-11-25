@@ -19,6 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ ui.loading | escape }}</title>
   <meta name="description" data-odin-if="page.description" data-odin-content="page.description">
+  <link rel="icon" data-odin-if="site.icon" data-odin-image-href="site.icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   {%- comment -%} ODIN's two typefaces, then the ones the OCS theme presets name, so a picked theme shows in its own face. {%- endcomment -%}
@@ -69,6 +70,10 @@
         <li data-odin-if="site.linkedin"><a data-odin-href="site.linkedin">{{ ui.linkedin | escape }}</a></li>
       </ul>
     </nav>
+    <div class="odin__notice" data-odin-if="site.notice">
+      <h2 data-odin-if="site.notice_title" data-odin-text="site.notice_title"></h2>
+      <p data-odin-text="site.notice"></p>
+    </div>
     <p class="odin__footer-legal" data-odin-text="site.copyright"></p>
   </footer>
   <script>

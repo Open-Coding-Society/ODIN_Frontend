@@ -5,6 +5,7 @@
 //   data-odin-paragraphs  the element's text, one <p> for each paragraph of the value
 //   data-odin-src         an image's address, from the image's file name
 //   data-odin-alt         an image's description
+//   data-odin-image-href  a link element's address, from an image's file name (the tab's icon)
 //   data-odin-content     a meta element's content
 //   data-odin-href        a link to another site (https only)
 //   data-odin-tel         a link that opens the phone app, from a phone number
@@ -90,6 +91,10 @@ const MARKS = {
   'data-odin-src': (element, value, path, { imageUrl }) => {
     const address = imageUrl(requireText(value, path));
     return () => element.setAttribute('src', address);
+  },
+  'data-odin-image-href': (element, value, path, { imageUrl }) => {
+    const address = imageUrl(requireText(value, path));
+    return () => element.setAttribute('href', address);
   },
   'data-odin-alt': (element, value, path) => {
     const words = requireText(value, path);

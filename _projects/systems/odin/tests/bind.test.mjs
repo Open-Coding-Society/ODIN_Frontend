@@ -63,6 +63,13 @@ test('an image gets its address from the file name, and its description', () => 
   assert.equal(image.getAttribute('alt'), 'A photo');
 });
 
+test('a link element gets an image\'s address from its file name, for the tab\'s icon', () => {
+  const icon = h('link', { rel: 'icon', 'data-odin-image-href': 'sections.hero.image' });
+  bind(icon, context, tools);
+  assert.equal(icon.getAttribute('href'), 'http://backend/api/odin/image?name=photo.jpg');
+  assert.throws(() => bind(h('link', { 'data-odin-image-href': 'sections.hero.kicker' }), context, tools), /no text at sections\.hero\.kicker/);
+});
+
 test('a meta element gets its content', () => {
   const meta = h('meta', { name: 'description', 'data-odin-content': 'site.name' });
   bind(meta, context, tools);

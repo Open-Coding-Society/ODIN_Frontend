@@ -17,7 +17,7 @@ from. This file lists what the kit holds as each part is added.
 | Path | What it is |
 |---|---|
 | `distribution.json` | Where each source is published. Every destination is an `odin` folder that `.gitignore` covers. |
-| `layouts/site.html` | The whole document of every ODIN page: its own head, header, menu and footer, with no OCS top bar. It loads the OCS stylesheet and the theme script. The menu is built from the pages the backend lists that have an address in `_config.yml`. |
+| `layouts/site.html` | The whole document of every ODIN page: its own head, header, menu and footer, with no OCS top bar. It loads the OCS stylesheet and the theme script. The menu is built from the pages the backend lists that have an address in `_config.yml`. The footer carries the notice of the device's regulatory status on every page, and the head takes the tab's icon from the backend. |
 | `pages/` | One file per page. Each names the ODIN layout and its own address. |
 | `data/ui.yml` | The words of the site's own interface: the skip link, the loading line, the error message, the labels of the two menus and the names of the two social networks. Not ODIN's content. |
 | `js/content.js` | Asks the backend for the site basics, the page list, one page and an image's address. |
@@ -53,6 +53,7 @@ to another) and `sections.<section name>.<part>`.
 | `data-odin-text` | The element's text. |
 | `data-odin-paragraphs` | The element's text, one `p` for each paragraph of the value. |
 | `data-odin-src`, `data-odin-alt` | An image's address (from its file name) and its description. |
+| `data-odin-image-href` | A `link` element's address, from an image's file name. The tab's icon. |
 | `data-odin-content` | A `meta` element's content. |
 | `data-odin-href` | A link to another site. Only an `https` address is accepted. |
 | `data-odin-tel`, `data-odin-mail` | A link that opens the phone app or the email app, from a phone number or an email address. Text that makes no clean address gets no link and still shows. |
@@ -78,6 +79,7 @@ Two choices that differ from other kits, and why:
 | `pages/home.md` | `/` | The opening (the short line, ODIN's name, the one line, the contact button and the headset photo), the figures as a list with thin rules, and the closing paragraph with a link on to the how it works page. |
 | `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation beside the eye tracking picture, and the headset photo beside the features as a list of named facts. |
 | `pages/about.md` | `/about/` | The page title, the page's one line, the lens photo as a band across the page, and the mission's paragraphs. |
+| `pages/not-found.md` | `/404.html` | What a visitor sees at an address the site does not have: the backend's words and a button home. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
 
 The parts pages are built from are in `sass/_content.scss`: `odin__page-head` (a page's title and

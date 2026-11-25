@@ -106,6 +106,21 @@
     }
   }
 
+  // The notice every page carries: the device's regulatory status, in ODIN's words. It runs the
+  // footer's width at a reading line's length, in the text colour, so it is not passed over.
+  .odin__notice {
+    @include odin-flow($odin-gap-tight);
+
+    grid-column: 1 / -1;
+    max-width: $odin-line-width;
+    padding-top: $odin-space-block;
+    border-top: $odin-rule-line;
+
+    h2 {
+      font-size: $odin-text-body;
+    }
+  }
+
   .odin__footer-legal {
     grid-column: 1 / -1;
     color: var(--odin-quiet);
