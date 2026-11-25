@@ -157,6 +157,10 @@ exclude:
   - assets/css/pause-menu.css
   - assets/css/safe-passage-board.sass
   - assets/css/simulations.css
+  # A file the login kit leaves here when it has been built on this machine
+  - assets/js/api/reverify.js
+  # The kit's stylesheet on its own. Its rules are already in the one stylesheet.
+  - assets/css/projects
   # The template's media and icons. ODIN's images and its icon come from the backend.
   - images
   - media
@@ -264,4 +268,5 @@ minima:
     - { platform: github, user_url: "https://github.com/open-coding-society" }
     - { platform: x, user_url: "https://x.com/Open_Coding" }
     - { platform: youtube, user_url: "https://www.youtube.com/@OpenCodingSociety" } 
-  nav_pages: []
+  nav_pages:
+    - navigation/projects/topics/topics.md

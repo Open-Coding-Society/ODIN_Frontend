@@ -23,8 +23,9 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  // It also hides every h1, gives it a glow, colours the other bare headings, p and li for the
-  // OCS docs pages and rounds every image. ODIN's pages set their own.
+  // It also gives h1 a glow, colours the other bare headings, p and li for the OCS docs pages
+  // and rounds every image, and a template kit, when it is registered, hides every h1. ODIN's
+  // pages set their own.
   h1,
   h2,
   h3,

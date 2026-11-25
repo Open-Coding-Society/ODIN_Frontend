@@ -114,13 +114,13 @@ media. A visitor to ODIN's site should reach none of them, so:
 - `_config.yml` has an `exclude` list for everything else the template would publish. The files
   stay in the repo untouched, so an upstream sync still applies.
 
-The built site is ODIN's pages, `assets/css/style.css`, `assets/js/api/config.js`,
-`assets/js/user-preferences.js` and this kit's scripts. `tests/site.test.mjs` fails when a file
+The built site is ODIN's five pages, `assets/css/style.css`, `assets/js/api/config.js`,
+`assets/js/user-preferences.js` and this kit's four scripts: twelve files. `tests/site.test.mjs` fails when a file
 or folder appears that would be published and is not in the list, such as one an upstream sync
 adds.
 
 After changing which kits are registered, remove the copies the old ones published:
-`git clean -fdX -- navigation _includes/projects _layouts/projects _data/projects _plugins/projects assets/js/projects assets/css/projects assets/js/login _sass/projects images/projects _posts/projects`,
+`git clean -fdX -- navigation _includes/projects _layouts/projects _data/projects _plugins/projects assets/js/projects assets/css/projects assets/js/login assets/js/api _sass/projects images/projects _posts/projects`,
 then `make`. Do not use the publisher's `clean` action for a template kit: some of them publish
 over tracked files, and it deletes those.
 
