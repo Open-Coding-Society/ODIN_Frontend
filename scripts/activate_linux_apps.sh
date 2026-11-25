@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ex
-
+#test commit
 echo Adding App Installations for Ubuntu
 # Install VS Code
 sudo snap install --classic code
