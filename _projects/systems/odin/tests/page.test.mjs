@@ -64,6 +64,14 @@ test('the menu is the pages that have menu words and an address here, in the bac
   assert.deepEqual(context.menu.map((entry) => [entry.name, entry.menu, entry.current]), [['home', 'Home', false], ['about', 'About', true]]);
 });
 
+test('pages are read by name, and only those with an address here', () => {
+  const context = pageContext({ site: SITE, pages: PAGES, page: HOME, name: 'home', routes: ROUTES });
+  assert.deepEqual(Object.keys(context.pages), ['home', 'about', 'terms']);
+  assert.equal(context.pages.about.menu, 'About');
+  // Pricing has menu words but no address here, so nothing can link to it
+  assert.equal(context.pages.pricing, undefined);
+});
+
 test('the tab names the page and then the site, or only the site when they are the same', () => {
   const tab = (title) => pageContext({ site: SITE, pages: PAGES, page: { ...HOME, title }, name: 'home', routes: ROUTES }).page.tab;
   assert.equal(tab('Example Site'), 'Example Site');

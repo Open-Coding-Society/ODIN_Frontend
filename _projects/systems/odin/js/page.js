@@ -15,13 +15,19 @@ export function showState(root, state) {
   for (const part of parts) part.hidden = part.getAttribute('data-odin-state') !== state;
 }
 
-// What the markup's paths read from: the site basics, this page's details, the menu and this
-// page's sections by name. The menu is every page that has menu words and an address here.
+// What the markup's paths read from: the site basics, this page's details, the menu, the pages
+// by name and this page's sections by name. The menu is every page that has menu words and an
+// address here. `pages` holds every page with an address here, so one page can link to another
+// with the other's own words.
 export function pageContext({ site, pages, page, name, routes }) {
   const menu = pages
     .filter((entry) => isText(entry.menu) && Object.hasOwn(routes, entry.name))
     .map((entry) => ({ ...entry, current: entry.name === name }));
-  // No prototype, so a section could be named after anything an object inherits
+  // No prototype, so a page or a section could be named after anything an object inherits
+  const byName = Object.create(null);
+  for (const entry of pages) {
+    if (Object.hasOwn(routes, entry.name)) byName[entry.name] = entry;
+  }
   const sections = Object.create(null);
   for (const section of page.sections) {
     if (Object.hasOwn(sections, section.name)) throw new Error(`The page was given two sections named ${section.name}`);
@@ -29,7 +35,7 @@ export function pageContext({ site, pages, page, name, routes }) {
   }
   // The browser tab names the page and then the site, unless the page is named after the site
   const tab = !isText(page.title) || page.title === site.name ? site.name : `${page.title} | ${site.name}`;
-  return { site, page: { name, title: page.title, description: page.description, tab }, menu, sections };
+  return { site, page: { name, title: page.title, description: page.description, tab }, menu, pages: byName, sections };
 }
 
 // Each page's address on this site: the path _config.yml gives it, after the site's baseurl.

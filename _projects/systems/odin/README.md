@@ -44,8 +44,9 @@ Edit the sources here. Never edit a published copy.
    button that tries again.
 
 A mark is a data attribute whose value is a path into the content: `site.<key>` (the site basics),
-`page.<title|description|tab>`, `menu` (the pages with menu words and an address here) and
-`sections.<section name>.<part>`.
+`page.<title|description|tab>`, `menu` (the pages with menu words and an address here),
+`pages.<page name>.<name|title|menu>` (any page with an address here, for a link from one page
+to another) and `sections.<section name>.<part>`.
 
 | Mark | What is written |
 |---|---|
@@ -74,7 +75,7 @@ Two choices that differ from other kits, and why:
 
 | Page file | Address | Shows |
 |---|---|---|
-| `pages/home.md` | `/` | The hero's title and line, until the home page's own issue. |
+| `pages/home.md` | `/` | The opening (the short line, ODIN's name, the one line, the contact button and the headset photo), the figures as a ledger, and the closing paragraph with a link on to the how it works page. |
 | `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation beside the eye tracking picture, and the headset photo beside the features as a list of named facts. |
 | `pages/about.md` | `/about/` | The page title, the page's one line, the lens photo as a band across the page, and the mission's paragraphs. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
@@ -84,6 +85,8 @@ the line under it), `odin__photo` (a photo; `odin__photo--wide` is a band across
 `odin__prose` (running text), `odin__pair` (two things side by side), `odin__facts` with
 `odin__fact` rows (named facts with a thin rule between
 them) and `odin__partner` with `odin__partner-logo` (another organisation's logo and its link).
+The home page's own parts are in `sass/_home.scss`: `odin__opening`, `odin__section`,
+`odin__ledger` with `odin__ledger-row` (a figure and what it counts) and `odin__onward`.
 
 ## Styles
 

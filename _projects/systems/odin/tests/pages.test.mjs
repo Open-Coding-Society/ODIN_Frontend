@@ -34,6 +34,7 @@ function contextFor(page) {
     site: record(SITE, 'site'),
     page: record(['name', 'title', 'description', 'tab'], 'page'),
     menu: [record(MENU_ITEM, 'item')],
+    pages: Object.fromEntries(Object.keys(PAGES).map((name) => [name, record(['name', 'title', 'description', 'menu'], `pages.${name}`)])),
     sections,
   };
 }

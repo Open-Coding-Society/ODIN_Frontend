@@ -14,7 +14,9 @@ $odin-signal: #177840;
 $odin-font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
 $odin-font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-// The sizes of type, largest first. Every page uses these five and no other.
+// The sizes of type, largest first. The first is for ODIN's name at the top of the home page.
+// Every page uses these and no other.
+$odin-text-name: clamp(3rem, 9vw, 6.5rem);
 $odin-text-title: clamp(2.25rem, 6vw, 4rem);
 $odin-text-heading: clamp(1.5rem, 3vw, 2rem);
 $odin-text-subheading: 1.25rem;
