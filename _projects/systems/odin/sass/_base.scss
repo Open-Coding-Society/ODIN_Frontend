@@ -1,44 +1,63 @@
 // The page itself: its ground, its type and the column everything sits in.
 
 .odin {
-  min-height: 100vh;
-  margin: 0;
-  background: var(--odin-paper);
+  background-color: var(--odin-paper);
   color: var(--odin-ink);
-  font-family: var(--odin-font-body);
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
 
-  // The site-wide stylesheet hides every h1, colours bare h2, h3 and p for the OCS docs pages and
-  // rounds every image. ODIN's pages set their own.
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  // The site-wide stylesheet makes the body a dark flex column for the OCS pages.
+  body {
+    display: block;
+    min-height: 100vh;
+    margin: 0;
+    background-color: transparent;
+    color: var(--odin-ink);
+    font-family: var(--odin-font-body);
+    font-size: $odin-text-body;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  // It also hides every h1, gives it a glow, colours the other bare headings, p and li for the
+  // OCS docs pages and rounds every image. ODIN's pages set their own.
   h1,
   h2,
-  h3 {
+  h3,
+  h4,
+  h5,
+  h6 {
     display: block;
     margin: 0;
     color: var(--odin-ink);
     font-family: var(--odin-font-display);
+    font-size: $odin-text-body;
     font-stretch: 125%;
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: 0;
+    text-shadow: none;
   }
 
   h1 {
-    font-size: clamp(2.25rem, 6vw, 4rem);
+    font-size: $odin-text-title;
   }
 
   h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: $odin-text-heading;
   }
 
   h3 {
-    font-size: 1.125rem;
+    font-size: $odin-text-subheading;
     line-height: 1.3;
   }
 
-  p {
+  p,
+  li {
     margin: 0;
     color: var(--odin-ink);
   }
@@ -55,17 +74,23 @@
     text-underline-offset: 0.18em;
 
     @include odin-focus-ring;
+
+    &:hover {
+      color: var(--odin-signal);
+      text-decoration-thickness: 2px;
+    }
   }
 
-  [hidden] {
+  // Doubled so it outweighs a shared element that sets its own display, such as a button.
+  [hidden][hidden] {
     display: none;
   }
 }
 
-// The column: as wide as the measure, with the gutter kept at both sides on a narrow screen.
+// The column: as wide as the page width, with the gutter kept at both sides on a narrow screen.
 .odin__main {
   width: 100%;
-  max-width: $odin-measure;
+  max-width: $odin-page-width;
   margin: 0 auto;
   padding: 0 $odin-gutter;
 }
@@ -75,11 +100,11 @@
   position: absolute;
   left: $odin-gutter;
   top: -4rem;
-  padding: $odin-step-1 $odin-step-2;
-  background: var(--odin-paper);
+  padding: $odin-gap-tight $odin-gap;
+  background-color: var(--odin-paper);
   border: 1px solid var(--odin-rule);
 
   &:focus {
-    top: $odin-step-1;
+    top: $odin-gap-tight;
   }
 }

@@ -7,29 +7,38 @@
 
 $odin-paper: #ffffff;
 $odin-ink: #101319;
-$odin-signal: #15803d;
+// The lit lens in ODIN's hero photo has a hue of 145 degrees. This is that hue, darkened until
+// it keeps 4.5 to 1 on the page and on a tinted panel (tests/sass.test.mjs checks both).
+$odin-signal: #177840;
 
 $odin-font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
 $odin-font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-// The widest a line of the page runs, and the space kept at its sides.
-$odin-measure: 72rem;
+// The sizes of type, largest first. Every page uses these five and no other.
+$odin-text-title: clamp(2.25rem, 6vw, 4rem);
+$odin-text-heading: clamp(1.5rem, 3vw, 2rem);
+$odin-text-subheading: 1.25rem;
+$odin-text-body: 1.0625rem;
+$odin-text-caption: 0.875rem;
+
+// The widest the page's column runs, and the space kept at its sides.
+$odin-page-width: 72rem;
 $odin-gutter: clamp(1.25rem, 4vw, 3rem);
 
-// The page's vertical steps, from the gap inside a block to the gap between sections.
-$odin-step-1: 0.5rem;
-$odin-step-2: 1rem;
-$odin-step-3: 1.5rem;
-$odin-step-4: 2.5rem;
-$odin-step-5: clamp(3.5rem, 8vw, 6rem);
+// Small gaps come from the shared OCS scale (open-coding/mixins/_variables.scss).
+$odin-gap-tight: $spacing-xxs;
+$odin-gap: $spacing-md;
 
 // ODIN's defaults, for a visitor who has not picked a theme. They are written into the site's own
-// theme variables, so the shared OCS elements (buttons, inputs, callouts) take them too.
-html:not(.user-theme-active) .odin {
+// theme variables, so the shared OCS elements (buttons, inputs, callouts) take them too. The
+// shades the elements read are mixed from the same three colours.
+html.odin:not(.user-theme-active) {
   --pref-bg-color: #{$odin-paper};
   --pref-text-color: #{$odin-ink};
   --pref-accent-color: #{$odin-signal};
+  --pref-success-color: #{$odin-signal};
   --pref-font-family: #{$odin-font-body};
+  --pref-font-size: 16px;
   --panel: color-mix(in srgb, var(--pref-text-color) 4%, var(--pref-bg-color));
   --panel-mid: color-mix(in srgb, var(--pref-text-color) 8%, var(--pref-bg-color));
   --ui-bg: color-mix(in srgb, var(--pref-text-color) 6%, var(--pref-bg-color));
@@ -39,8 +48,8 @@ html:not(.user-theme-active) .odin {
   --odin-font-display: #{$odin-font-display};
 }
 
-// The names every other rule in the kit uses. Each one is the theme's text or accent, or one of
-// them mixed into the theme's background, so the page reads in any theme.
+// The names every other rule in the kit uses. Each one is the theme's text or accent, or the text
+// mixed into the theme's background, so the page reads in any theme.
 .odin {
   --odin-paper: var(--pref-bg-color);
   --odin-ink: var(--pref-text-color);
@@ -58,12 +67,5 @@ html:not(.user-theme-active) .odin {
   &:focus-visible {
     outline: 2px solid var(--odin-signal);
     outline-offset: $offset;
-  }
-}
-
-// Narrower than a tablet in portrait.
-@mixin odin-below-mobile {
-  @media (max-width: $breakpoint-mobile) {
-    @content;
   }
 }

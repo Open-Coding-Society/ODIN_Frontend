@@ -2,23 +2,25 @@
   The whole document of every ODIN page. ODIN is its own site, so this layout does not sit inside
   the shared OCS layout and has no OCS top bar. It loads the one OCS stylesheet, which holds the
   OCS SASS grammar and this kit's styles, and the theme script, so a visitor's chosen theme applies
-  here as it does on every OCS page. The words below are the interface's own
+  here as it does on every OCS page. The odin class is on the html element, where the theme
+  script writes a picked theme, so ODIN's defaults and a visitor's theme meet in one place. The words below are the interface's own
   (_data/projects/odin/ui.yml). Everything a visitor reads about ODIN comes from the backend.
 {%- endcomment -%}
 {%- assign ui = site.data.projects.odin.ui -%}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="odin">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ ui.loading | escape }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+  {%- comment -%} ODIN's two typefaces, then the ones the OCS theme presets name, so a picked theme shows in its own face. {%- endcomment -%}
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Inter:wght@400;600&amp;family=Open+Sans:wght@400;600&amp;family=Source+Code+Pro:wght@400;600&amp;display=swap">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <script src="{{ '/assets/js/user-preferences.js' | relative_url }}"></script>
 </head>
-<body class="odin">
+<body>
   <a class="odin__skip" href="#odin-main">{{ ui.skip | escape }}</a>
   <main class="odin__main" id="odin-main">
     {{ content }}
