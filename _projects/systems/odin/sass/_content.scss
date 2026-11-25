@@ -1,0 +1,70 @@
+// The parts a page's own content is built from. Each is used by more than one page.
+
+.odin {
+  // A page's title and the line under it.
+  .odin__page-head {
+    max-width: $odin-line-width;
+    padding: $odin-space-section 0 $odin-space-block;
+
+    > * + * {
+      margin-top: $odin-gap;
+    }
+  }
+
+  // The shared lead is centred and muted for the OCS pages. Here it starts at the left, in ink.
+  .ocs__lead {
+    max-width: $odin-line-width;
+    margin-left: 0;
+    margin-right: 0;
+    color: var(--odin-ink);
+    font-size: $odin-text-subheading;
+    line-height: 1.45;
+    text-align: left;
+  }
+
+  // Named facts, one to a row with a thin rule above: the name on the left, the fact beside it.
+  // On a narrow screen the fact goes under its name.
+  .odin__facts {
+    margin: 0;
+    border-bottom: 1px solid var(--odin-rule);
+  }
+
+  .odin__fact {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+    gap: $odin-gap-tight $odin-space-block;
+    padding: $odin-gap 0;
+    border-top: 1px solid var(--odin-rule);
+
+    @media (max-width: $breakpoint-mobile) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    dt {
+      color: var(--odin-quiet);
+      font-size: $odin-text-caption;
+      font-weight: 500;
+      line-height: 1.9;
+    }
+
+    dd {
+      margin: 0;
+      font-size: $odin-text-subheading;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  // Another organisation's logo. The file is drawn in white, so on a light ground it is turned
+  // dark.
+  .odin__mark-row {
+    padding: $odin-space-block 0 0;
+  }
+
+  .odin__mark {
+    width: 7.5rem;
+  }
+
+  &[data-odin-tone="light"] .odin__mark {
+    filter: invert(1);
+  }
+}

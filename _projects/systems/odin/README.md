@@ -54,6 +54,7 @@ A mark is a data attribute whose value is a path into the content: `site.<key>` 
 | `data-odin-src`, `data-odin-alt` | An image's address (from its file name) and its description. |
 | `data-odin-content` | A `meta` element's content. |
 | `data-odin-href` | A link to another site. Only an `https` address is accepted. |
+| `data-odin-tel`, `data-odin-mail` | A link that opens the phone app or the email app, from a phone number or an email address. Text that is not one stops the page. |
 | `data-odin-route` | A link to one of this site's pages, from the page's name. |
 | `data-odin-current` | `aria-current="page"` on the link of the page being shown. |
 | `data-odin-if` | Shows the element only when the content has the value. Use it for a part a section may not have. |
@@ -68,6 +69,17 @@ Two choices that differ from other kits, and why:
 - The content is public, so it is asked for with `credentials: 'omit'` and no extra headers, not
   with the shared `fetchOptions`. That sends no login cookie for a public page and needs no CORS
   preflight, which halves the requests a page makes.
+
+## Pages
+
+| Page file | Address | Shows |
+|---|---|---|
+| `pages/home.md` | `/` | The hero's title and line, until the home page's own issue. |
+| `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
+
+The parts pages are built from are in `sass/_content.scss`: `odin__page-head` (a page's title and
+the line under it), `odin__facts` with `odin__fact` rows (named facts with a thin rule between
+them) and `odin__mark` (another organisation's logo).
 
 ## Styles
 

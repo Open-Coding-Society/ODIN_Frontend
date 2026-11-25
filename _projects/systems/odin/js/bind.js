@@ -7,6 +7,8 @@
 //   data-odin-alt         an image's description
 //   data-odin-content     a meta element's content
 //   data-odin-href        a link to another site (https only)
+//   data-odin-tel         a link that opens the phone app, from a phone number
+//   data-odin-mail        a link that opens the email app, from an email address
 //   data-odin-route       a link to one of this site's pages, from the page's name
 //   data-odin-current     marks the link of the page being shown
 //   data-odin-if          shows the element only when the content has the value
@@ -44,6 +46,21 @@ function requireText(value, path) {
   return value;
 }
 
+// A phone number as a tel: address. Only a plain number makes one: digits, with the spaces,
+// brackets, dots and hyphens people write them with, and a plus sign in front.
+function telAddress(value, path) {
+  const number = value.replace(/[\s().-]/g, '');
+  if (!/^\+?\d{7,15}$/.test(number)) throw new Error(`The content has no phone number at ${path}`);
+  return `tel:${number}`;
+}
+
+// An email address as a mailto: address. One with a character that would change what the link
+// does (a question mark starts a subject line) is refused.
+function mailAddress(value, path) {
+  if (!/^[^\s@?#%&]+@[^\s@?#%&]+\.[^\s@?#%&]+$/.test(value)) throw new Error(`The content has no email address at ${path}`);
+  return `mailto:${value}`;
+}
+
 // One entry per attribute: given the element, the value at its path and the path, it checks the
 // value and returns the write.
 const MARKS = {
@@ -76,6 +93,14 @@ const MARKS = {
   'data-odin-href': (element, value, path) => {
     if (typeof value !== 'string' || !value.startsWith('https://')) throw new Error(`The content has no https link at ${path}`);
     return () => element.setAttribute('href', value);
+  },
+  'data-odin-tel': (element, value, path) => {
+    const address = telAddress(requireText(value, path), path);
+    return () => element.setAttribute('href', address);
+  },
+  'data-odin-mail': (element, value, path) => {
+    const address = mailAddress(requireText(value, path), path);
+    return () => element.setAttribute('href', address);
   },
   'data-odin-route': (element, value, path, { routes }) => {
     if (!isText(value) || !Object.hasOwn(routes, value)) throw new Error(`This site has no page for ${path}`);

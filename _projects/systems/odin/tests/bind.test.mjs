@@ -78,6 +78,33 @@ test('a link to another site is written only when it is an https address', () =>
   }
 });
 
+test('a phone number becomes a tel link of its digits', () => {
+  for (const [value, address] of [['555 0100 200', 'tel:5550100200'], ['(555) 010-0200', 'tel:5550100200'], ['+1 555.010.0200', 'tel:+15550100200']]) {
+    const link = h('a', { 'data-odin-tel': 'value', 'data-odin-text': 'value' });
+    bind(link, { value }, tools);
+    assert.equal(link.getAttribute('href'), address);
+    assert.equal(link.textContent, value);
+  }
+});
+
+test('text that is not a plain phone number stops the page, like any other value it cannot use', () => {
+  for (const value of ['555 0100 ext. 4', 'call us', '12', 'tel:5550100200', '555;0100200']) {
+    assert.throws(() => bind(h('a', { 'data-odin-tel': 'value' }), { value }, tools), /no phone number at value/);
+  }
+});
+
+test('an email address becomes a mailto link', () => {
+  const link = h('a', { 'data-odin-mail': 'value' });
+  bind(link, { value: 'hello@example.com' }, tools);
+  assert.equal(link.getAttribute('href'), 'mailto:hello@example.com');
+});
+
+test('an email with a character that would change what the link does stops the page', () => {
+  for (const value of ['a@b.com?subject=x', 'a b@c.com', 'not an email', 'a@b.com&cc=d@e.com', 'a@b']) {
+    assert.throws(() => bind(h('a', { 'data-odin-mail': 'value' }), { value }, tools), /no email address at value/);
+  }
+});
+
 test('a page name becomes that page\'s address, and a name with no address here throws', () => {
   const link = h('a', { 'data-odin-route': 'page.name' });
   bind(link, context, tools);

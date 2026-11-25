@@ -21,8 +21,10 @@ $odin-text-subheading: 1.25rem;
 $odin-text-body: 1.0625rem;
 $odin-text-caption: 0.875rem;
 
-// The widest the page's column runs, and the space kept at its sides.
+// The widest the page's column runs, the widest a line of reading text runs, and the space kept
+// at the column's sides.
 $odin-page-width: 72rem;
+$odin-line-width: 40rem;
 $odin-gutter: clamp(1.25rem, 4vw, 3rem);
 
 // Small gaps come from the shared OCS scale (open-coding/mixins/_variables.scss).
