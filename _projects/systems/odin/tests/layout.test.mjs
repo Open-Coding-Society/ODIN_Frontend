@@ -220,3 +220,19 @@ test('every image in the layout and the pages gets its description from the back
     }
   }
 });
+
+test('the footer carries the regulatory notice on every page, and a site without one shows the error', () => {
+  const footer = markup(layout).match(/<footer\b[\s\S]*?<\/footer>/)[0];
+  const notice = footer.match(/<div class="odin__notice"[^>]*>[\s\S]*?<\/div>/)[0];
+  assert.match(notice, /<p data-odin-text="site\.notice"><\/p>/);
+  assert.match(notice, /<h2 data-odin-if="site\.notice_title" data-odin-text="site\.notice_title"><\/h2>/);
+  // No guard on the notice itself: content without it is content the pages must not be shown with
+  assert.ok(!/data-odin-if="site\.notice"/.test(footer));
+});
+
+test('the tab\'s icon comes from the backend, and until then the browser is given an empty one', () => {
+  const icon = markup(layout).match(/<link rel="icon"[^>]*>/)[0];
+  assert.match(icon, /\bhref="data:,"/);
+  assert.match(icon, /\bdata-odin-image-href="site\.icon"/);
+  assert.match(icon, /\bdata-odin-if="site\.icon"/);
+});

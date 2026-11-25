@@ -131,3 +131,12 @@ test('a part a section may not have is guarded, so the page shows without it', (
     }
   }
 });
+
+test('the not found page has the backend\'s words and a way home', () => {
+  const page = read('pages/not-found.md');
+  assert.match(page, /<h1 data-odin-text="sections\.message\.title"><\/h1>/);
+  assert.match(page, /^search_exclude: true$/m);
+  const button = tagWith('pages/not-found.md', 'ocs__btn');
+  assert.match(button, /\bdata-odin-route="pages\.home\.name"/);
+  assert.match(button, /\bdata-odin-text="sections\.message\.action"/);
+});

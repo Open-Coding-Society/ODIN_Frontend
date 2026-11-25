@@ -19,7 +19,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ ui.loading | escape }}</title>
   <meta name="description" data-odin-if="page.description" data-odin-content="page.description">
-  <link rel="icon" data-odin-if="site.icon" data-odin-image-href="site.icon">
+  {%- comment -%} An empty icon until the backend names ODIN's, so the browser does not go looking for one at the host's root. {%- endcomment -%}
+  <link rel="icon" href="data:," data-odin-if="site.icon" data-odin-image-href="site.icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   {%- comment -%} ODIN's two typefaces, then the ones the OCS theme presets name, so a picked theme shows in its own face. {%- endcomment -%}
@@ -70,7 +71,8 @@
         <li data-odin-if="site.linkedin"><a data-odin-href="site.linkedin">{{ ui.linkedin | escape }}</a></li>
       </ul>
     </nav>
-    <div class="odin__notice" data-odin-if="site.notice">
+    {%- comment -%} Not guarded: a site that cannot show the notice shows the error instead of its pages. {%- endcomment -%}
+    <div class="odin__notice">
       <h2 data-odin-if="site.notice_title" data-odin-text="site.notice_title"></h2>
       <p data-odin-text="site.notice"></p>
     </div>

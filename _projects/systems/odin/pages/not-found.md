@@ -1,6 +1,7 @@
 ---
 layout: projects/odin/site
 permalink: /404.html
+search_exclude: true
 ---
 
 <!-- markdownlint-capture -->

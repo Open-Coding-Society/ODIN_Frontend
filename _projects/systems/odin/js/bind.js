@@ -92,13 +92,13 @@ const MARKS = {
     const address = imageUrl(requireText(value, path));
     return () => element.setAttribute('src', address);
   },
-  'data-odin-image-href': (element, value, path, { imageUrl }) => {
-    const address = imageUrl(requireText(value, path));
-    return () => element.setAttribute('href', address);
-  },
   'data-odin-alt': (element, value, path) => {
     const words = requireText(value, path);
     return () => element.setAttribute('alt', words);
+  },
+  'data-odin-image-href': (element, value, path, { imageUrl }) => {
+    const address = imageUrl(requireText(value, path));
+    return () => element.setAttribute('href', address);
   },
   'data-odin-content': (element, value, path) => {
     const words = requireText(value, path);
