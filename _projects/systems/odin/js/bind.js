@@ -8,7 +8,8 @@
 //   data-odin-content     a meta element's content
 //   data-odin-href        a link to another site (https only)
 //   data-odin-tel         a link that opens the phone app, from a phone number
-//   data-odin-mail        a link that opens the email app, from an email address
+//   data-odin-mail        a link that opens the email app, from an email address. Text that
+//                         makes no clean phone or email address gets no link and still shows
 //   data-odin-route       a link to one of this site's pages, from the page's name
 //   data-odin-current     marks the link of the page being shown
 //   data-odin-if          shows the element only when the content has the value
@@ -46,19 +47,27 @@ function requireText(value, path) {
   return value;
 }
 
-// A phone number as a tel: address. Only a plain number makes one: digits, with the spaces,
-// brackets, dots and hyphens people write them with, and a plus sign in front.
-function telAddress(value, path) {
-  const number = value.replace(/[\s().-]/g, '');
-  if (!/^\+?\d{7,15}$/.test(number)) throw new Error(`The content has no phone number at ${path}`);
-  return `tel:${number}`;
+// A phone number as a tel: address, or null for text that is not one plain number. A plain
+// number is digits, with the spaces, brackets, dots and hyphens people write them with, and a
+// plus sign in front. After a plus sign, a zero in brackets is the one dialled only inside the
+// country, so it is left out.
+function telAddress(value) {
+  const number = value.replace(/^(\+\d+\s*)\(0\)/, '$1').replace(/[\s().-]/g, '');
+  return /^\+?\d{7,15}$/.test(number) ? `tel:${number}` : null;
 }
 
-// An email address as a mailto: address. One with a character that would change what the link
-// does (a question mark starts a subject line) is refused.
-function mailAddress(value, path) {
-  if (!/^[^\s@?#%&]+@[^\s@?#%&]+\.[^\s@?#%&]+$/.test(value)) throw new Error(`The content has no email address at ${path}`);
-  return `mailto:${value}`;
+// An email address as a mailto: address, or null for text that is not one address, or that has
+// a character which would change what the link does (a question mark starts a subject line).
+function mailAddress(value) {
+  const plain = /^[^\s@?#%&:,;<>"/]+@[^\s@?#%&:,;<>"/]+\.[^\s@?#%&:,;<>"/]+$/.test(value) && !value.includes('..');
+  return plain ? `mailto:${value}` : null;
+}
+
+// Sets the link's address, or takes it away. A contact detail written in a way that makes no
+// clean address is still content: its text shows, as plain text, and the page is not stopped.
+function setAddress(element, address) {
+  if (address === null) element.removeAttribute('href');
+  else element.setAttribute('href', address);
 }
 
 // One entry per attribute: given the element, the value at its path and the path, it checks the
@@ -95,12 +104,12 @@ const MARKS = {
     return () => element.setAttribute('href', value);
   },
   'data-odin-tel': (element, value, path) => {
-    const address = telAddress(requireText(value, path), path);
-    return () => element.setAttribute('href', address);
+    const address = telAddress(requireText(value, path));
+    return () => setAddress(element, address);
   },
   'data-odin-mail': (element, value, path) => {
-    const address = mailAddress(requireText(value, path), path);
-    return () => element.setAttribute('href', address);
+    const address = mailAddress(requireText(value, path));
+    return () => setAddress(element, address);
   },
   'data-odin-route': (element, value, path, { routes }) => {
     if (!isText(value) || !Object.hasOwn(routes, value)) throw new Error(`This site has no page for ${path}`);

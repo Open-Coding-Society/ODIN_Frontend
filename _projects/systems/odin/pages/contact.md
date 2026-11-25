@@ -23,9 +23,9 @@ permalink: /contact/
     <dd data-odin-text="site.address"></dd>
   </div>
 </dl>
-<p class="odin__mark-row" data-odin-if="sections.evonexus">
+<p class="odin__partner" data-odin-if="sections.evonexus.image_link">
   <a data-odin-href="sections.evonexus.image_link">
-    <img class="odin__mark" data-odin-src="sections.evonexus.image" data-odin-alt="sections.evonexus.image_alt">
+    <img class="odin__partner-logo" data-odin-src="sections.evonexus.image" data-odin-alt="sections.evonexus.image_alt">
   </a>
 </p>
 <!-- markdownlint-restore -->

@@ -1,4 +1,4 @@
-// The parts a page's own content is built from. Each is used by more than one page.
+// The parts a page's own content is built from. The contact page is the first to use them.
 
 .odin {
   // A page's title and the line under it.
@@ -11,40 +11,37 @@
     }
   }
 
-  // The shared lead is centred and muted for the OCS pages. Here it starts at the left, in ink.
+  // The shared lead, a size up, for the one line under a page's title.
   .ocs__lead {
-    max-width: $odin-line-width;
-    margin-left: 0;
-    margin-right: 0;
-    color: var(--odin-ink);
     font-size: $odin-text-subheading;
     line-height: 1.45;
-    text-align: left;
   }
 
   // Named facts, one to a row with a thin rule above: the name on the left, the fact beside it.
   // On a narrow screen the fact goes under its name.
   .odin__facts {
     margin: 0;
-    border-bottom: 1px solid var(--odin-rule);
+    border-bottom: $odin-rule-line;
   }
 
   .odin__fact {
     display: grid;
     grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+    align-items: baseline;
     gap: $odin-gap-tight $odin-space-block;
     padding: $odin-gap 0;
-    border-top: 1px solid var(--odin-rule);
+    border-top: $odin-rule-line;
 
     @media (max-width: $breakpoint-mobile) {
       grid-template-columns: minmax(0, 1fr);
     }
 
+    // The label steps back by its size, not its colour: a visitor's theme does not recolour a
+    // dt, and the quiet shade of some themes is too faint for small type.
     dt {
-      color: var(--odin-quiet);
+      color: var(--odin-ink);
       font-size: $odin-text-caption;
       font-weight: 500;
-      line-height: 1.9;
     }
 
     dd {
@@ -54,17 +51,25 @@
     }
   }
 
-  // Another organisation's logo. The file is drawn in white, so on a light ground it is turned
-  // dark.
-  .odin__mark-row {
+  // Another organisation's logo, which links to its site. The link is as big as the logo and no
+  // bigger.
+  .odin__partner {
     padding: $odin-space-block 0 0;
+
+    a {
+      display: inline-block;
+    }
   }
 
-  .odin__mark {
+  // The space is kept before the file arrives, so the footer does not jump.
+  .odin__partner-logo {
     width: 7.5rem;
+    aspect-ratio: auto 1 / 1;
   }
 
-  &[data-odin-tone="light"] .odin__mark {
+  // The one logo the backend has is drawn in white on a clear ground, so on a light ground it is
+  // turned dark. A logo in colour would need its own file for each ground from the backend.
+  &[data-odin-tone="light"] .odin__partner-logo {
     filter: invert(1);
   }
 }
