@@ -70,6 +70,8 @@ test('pages are read by name, and only those with an address here', () => {
   assert.equal(context.pages.about.menu, 'About');
   // Pricing has menu words but no address here, so nothing can link to it
   assert.equal(context.pages.pricing, undefined);
+  const twice = [...PAGES, { name: 'about', title: 'Again', menu: 'Again' }];
+  assert.throws(() => pageContext({ site: SITE, pages: twice, page: HOME, name: 'home', routes: ROUTES }), /names about twice/);
 });
 
 test('the tab names the page and then the site, or only the site when they are the same', () => {

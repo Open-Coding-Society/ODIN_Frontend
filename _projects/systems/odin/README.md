@@ -75,7 +75,7 @@ Two choices that differ from other kits, and why:
 
 | Page file | Address | Shows |
 |---|---|---|
-| `pages/home.md` | `/` | The opening (the short line, ODIN's name, the one line, the contact button and the headset photo), the figures as a ledger, and the closing paragraph with a link on to the how it works page. |
+| `pages/home.md` | `/` | The opening (the short line, ODIN's name, the one line, the contact button and the headset photo), the figures as a list with thin rules, and the closing paragraph with a link on to the how it works page. |
 | `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation beside the eye tracking picture, and the headset photo beside the features as a list of named facts. |
 | `pages/about.md` | `/about/` | The page title, the page's one line, the lens photo as a band across the page, and the mission's paragraphs. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
@@ -85,8 +85,10 @@ the line under it), `odin__photo` (a photo; `odin__photo--wide` is a band across
 `odin__prose` (running text), `odin__pair` (two things side by side), `odin__facts` with
 `odin__fact` rows (named facts with a thin rule between
 them) and `odin__partner` with `odin__partner-logo` (another organisation's logo and its link).
-The home page's own parts are in `sass/_home.scss`: `odin__opening`, `odin__section`,
-`odin__ledger` with `odin__ledger-row` (a figure and what it counts) and `odin__onward`.
+Also there: `odin__facts--figures` (numbers as the named facts, set large), `odin__section` (a
+part of a page with its own heading), `odin__onward` (the link on to the next page) and
+`odin__aside` (a line that belongs to what is above it). The home page's own parts are in
+`sass/_home.scss`: `odin__opening` with `odin__opening-words`, and `odin__overline`.
 
 ## Styles
 

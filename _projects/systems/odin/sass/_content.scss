@@ -41,9 +41,36 @@
     max-width: $odin-line-width;
     padding: $odin-space-section 0 0;
 
-    @media (min-width: $breakpoint-mobile + 1px) {
-      margin-left: calc(25% + #{$odin-space-block * 0.75});
+    @include odin-wide {
+      margin-left: $odin-facts-indent;
     }
+  }
+
+  // A part of a page with its own heading, set off by a rule with a section's space under it.
+  // Inside one the running text starts at once, under the heading's gap.
+  .odin__section {
+    @include odin-flow($odin-space-block);
+
+    padding: $odin-space-section 0 0;
+    border-top: $odin-rule-line;
+
+    .odin__prose {
+      padding-top: 0;
+    }
+  }
+
+  .odin__section + .odin__section {
+    margin-top: $odin-space-section;
+  }
+
+  // The way on from the end of a page to the next one, under the text it follows.
+  .odin__onward {
+    font-weight: 500;
+  }
+
+  // A line that belongs to what is above it, such as where a list's figures come from.
+  .odin__aside {
+    font-size: $odin-text-caption;
   }
 
   // Two things side by side, such as a photo and what is said about it. Each takes half the
@@ -77,13 +104,12 @@
   // Named facts, one to a row with a thin rule above: the name on the left, the fact beside it.
   // On a narrow screen the fact goes under its name.
   .odin__facts {
-    margin: 0;
     border-bottom: $odin-rule-line;
   }
 
   .odin__fact {
     display: grid;
-    grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+    grid-template-columns: $odin-facts-columns;
     align-items: baseline;
     gap: $odin-gap-tight $odin-space-block;
     padding: $odin-gap 0;
@@ -105,6 +131,30 @@
       margin: 0;
       font-size: $odin-text-subheading;
       overflow-wrap: anywhere;
+    }
+  }
+
+  // Figures: the number is the name of the fact, set large in the display face, and what it
+  // counts is beside it. The shared ocs__stats is not used: it puts each figure in a centred,
+  // bordered box with a small capital label.
+  .odin__facts--figures {
+    .odin__fact {
+      grid-template-columns: $odin-opening-columns;
+
+      @include odin-narrow {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    dt {
+      @include odin-display-type;
+
+      font-size: $odin-text-figure;
+      overflow-wrap: anywhere;
+    }
+
+    dd {
+      font-size: $odin-text-body;
     }
   }
 

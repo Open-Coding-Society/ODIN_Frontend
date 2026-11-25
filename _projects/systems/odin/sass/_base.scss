@@ -33,13 +33,10 @@
   h6 {
     display: block;
     margin: 0;
+    @include odin-display-type;
+
     color: var(--odin-ink);
-    font-family: var(--odin-font-display);
     font-size: $odin-text-body;
-    font-stretch: 125%;
-    font-weight: 600;
-    line-height: 1.15;
-    letter-spacing: 0;
     text-shadow: none;
   }
 
@@ -62,7 +59,9 @@
     color: var(--odin-ink);
   }
 
-  figure {
+  figure,
+  dl,
+  dd {
     margin: 0;
   }
 

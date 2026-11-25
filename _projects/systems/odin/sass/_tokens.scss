@@ -18,6 +18,9 @@ $odin-font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-ser
 // Every page uses these and no other.
 $odin-text-name: clamp(3rem, 9vw, 6.5rem);
 $odin-text-title: clamp(2.25rem, 6vw, 4rem);
+// A figure in a list: larger than a heading, and small enough for a long number to stay on one
+// line in its column.
+$odin-text-figure: clamp(1.75rem, 3.6vw, 2.75rem);
 $odin-text-heading: clamp(1.5rem, 3vw, 2rem);
 $odin-text-subheading: 1.25rem;
 $odin-text-body: 1.0625rem;
@@ -75,6 +78,14 @@ html.odin:not(.user-theme-active) {
 $odin-shape-photo: 3 / 2;
 $odin-shape-band: 21 / 9;
 
+// Where the second of two columns starts, as a left margin for something that sits under it:
+// in a list of named facts (a quarter and three quarters), and in the home page's opening and
+// its figures (five parts and six).
+$odin-facts-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+$odin-facts-indent: calc(25% + #{$odin-space-block * 0.75});
+$odin-opening-columns: minmax(0, 5fr) minmax(0, 6fr);
+$odin-opening-indent: calc((100% - #{$odin-space-block}) * 5 / 11 + #{$odin-space-block});
+
 // The thin line between parts of a page.
 $odin-rule-line: 1px solid var(--odin-rule);
 
@@ -87,6 +98,22 @@ $odin-rule-line: 1px solid var(--odin-rule);
   margin-right: auto;
   padding-left: $odin-gutter;
   padding-right: $odin-gutter;
+}
+
+// The display face as headings wear it: wide and heavy, with tight lines.
+@mixin odin-display-type {
+  font-family: var(--odin-font-display);
+  font-stretch: 125%;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+// Rules for a screen wider than a tablet held upright.
+@mixin odin-wide {
+  @media (min-width: $breakpoint-mobile + 1px) {
+    @content;
+  }
 }
 
 // Rules for a screen no wider than a tablet held upright, where side by side becomes one under

@@ -1,11 +1,11 @@
-// The home page: its opening, and the figures.
+// The home page's own parts: its opening, and where its text sits under the figures.
 
 .odin {
-  // The top of the home page: what ODIN is on one side, the headset on the other. On a narrow
-  // screen the photo goes under the words.
+  // What ODIN is on one side, the headset on the other. On a narrow screen the photo goes under
+  // the words.
   .odin__opening {
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-columns: $odin-opening-columns;
     align-items: center;
     gap: $odin-space-block;
     padding: $odin-space-section 0;
@@ -18,9 +18,10 @@
   .odin__opening-words {
     @include odin-flow;
 
-    // The name is the largest thing on the site
+    // The name is the largest thing on the site. A longer one breaks where it must.
     h1 {
       font-size: $odin-text-name;
+      overflow-wrap: anywhere;
     }
   }
 
@@ -30,62 +31,14 @@
     font-weight: 500;
   }
 
-  // A part of a page with its own heading, set off by a rule and a section's space.
-  .odin__section {
-    padding: $odin-space-section 0 0;
-    margin-top: $odin-space-section;
-    border-top: $odin-rule-line;
-
-    @include odin-flow($odin-space-block);
-
-    // Inside a section the running text starts at once, with the heading's gap above it
-    .odin__prose {
-      padding-top: 0;
-    }
-  }
-
-  // The way on from the end of the page to the next one, under the text it follows.
-  .odin__onward {
-    font-weight: 500;
-
-    @media (min-width: $breakpoint-mobile + 1px) {
-      margin-left: calc(25% + #{$odin-space-block * 0.75});
-    }
-  }
-
-  // Figures, one to a row: the number large on the left, what it counts beside it.
-  // No margin of its own is set, so the section's gap under the heading applies.
-  .odin__ledger {
-    border-bottom: $odin-rule-line;
-  }
-
-  .odin__ledger-row {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    align-items: baseline;
-    gap: $odin-gap-tight $odin-space-block;
-    padding: $odin-gap 0;
-    border-top: $odin-rule-line;
-
-    @include odin-narrow {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    // The number comes first for the eye. In the markup the name of the thing counted is the
-    // term and the number is its value, so the order is set here.
-    dd {
-      order: -1;
-      margin: 0;
-      font-family: var(--odin-font-display);
-      font-size: $odin-text-heading;
-      font-stretch: 125%;
-      font-weight: 600;
-      line-height: 1.15;
-      font-variant-numeric: tabular-nums;
-    }
-
-    dt {
-      color: var(--odin-ink);
+  // Under the opening, text starts where the photo and the figures' second column start.
+  .odin__opening ~ .odin__section {
+    .odin__prose,
+    .odin__onward,
+    .odin__aside {
+      @include odin-wide {
+        margin-left: $odin-opening-indent;
+      }
     }
   }
 }

@@ -26,6 +26,7 @@ export function pageContext({ site, pages, page, name, routes }) {
   // No prototype, so a page or a section could be named after anything an object inherits
   const byName = Object.create(null);
   for (const entry of pages) {
+    if (Object.hasOwn(byName, entry.name)) throw new Error(`The page list names ${entry.name} twice`);
     if (Object.hasOwn(routes, entry.name)) byName[entry.name] = entry;
   }
   const sections = Object.create(null);
