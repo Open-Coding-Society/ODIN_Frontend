@@ -32,7 +32,7 @@
     <a class="odin__brand" href="{{ site.odin.routes.home | relative_url }}">
       <img class="odin__logo" data-odin-src="site.logo_dark" data-odin-alt="site.name">
     </a>
-    <nav class="odin__nav" aria-label="{{ ui.menu | escape }}">
+    <nav aria-label="{{ ui.menu | escape }}" data-odin-if="menu">
       <ul class="odin__menu" data-odin-each="menu">
         <template>
           <li><a class="odin__menu-link" data-odin-route="item.name" data-odin-text="item.menu" data-odin-current="item.current"></a></li>
@@ -57,19 +57,16 @@
     </noscript>
   </main>
   <footer class="odin__footer" data-odin-state="ready" hidden>
-    <div class="odin__footer-about">
-      <img class="odin__logo" data-odin-src="site.logo_dark" data-odin-alt="site.name">
-      <p data-odin-text="site.tagline"></p>
-    </div>
+    <p data-odin-text="site.tagline"></p>
     <nav class="odin__footer-nav" aria-label="{{ ui.footer_menu | escape }}">
-      <ul class="odin__footer-links" data-odin-each="menu">
+      <ul class="odin__footer-links" data-odin-if="menu" data-odin-each="menu">
         <template>
           <li><a data-odin-route="item.name" data-odin-text="item.menu"></a></li>
         </template>
       </ul>
       <ul class="odin__footer-links">
-        <li data-odin-if="site.instagram"><a data-odin-href="site.instagram" rel="noopener">{{ ui.instagram | escape }}</a></li>
-        <li data-odin-if="site.linkedin"><a data-odin-href="site.linkedin" rel="noopener">{{ ui.linkedin | escape }}</a></li>
+        <li data-odin-if="site.instagram"><a data-odin-href="site.instagram">{{ ui.instagram | escape }}</a></li>
+        <li data-odin-if="site.linkedin"><a data-odin-href="site.linkedin">{{ ui.linkedin | escape }}</a></li>
       </ul>
     </nav>
     <p class="odin__footer-legal" data-odin-text="site.copyright"></p>

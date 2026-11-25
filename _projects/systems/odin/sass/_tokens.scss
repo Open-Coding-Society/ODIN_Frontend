@@ -66,6 +66,27 @@ html.odin:not(.user-theme-active) {
   --odin-font-display: var(--pref-font-family);
 }
 
+// The thin line between parts of a page.
+$odin-rule-line: 1px solid var(--odin-rule);
+
+// The page's column: as wide as the page width, in the middle, with the gutter kept at both
+// sides on a narrow screen. The header, the main part and the footer all sit in it.
+@mixin odin-column {
+  width: 100%;
+  max-width: $odin-page-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $odin-gutter;
+  padding-right: $odin-gutter;
+}
+
+// A list that is a row or a column of links, not bullet points.
+@mixin odin-plain-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 // One ring, on everything that takes keyboard focus.
 @mixin odin-focus-ring($offset: 3px) {
   &:focus-visible {

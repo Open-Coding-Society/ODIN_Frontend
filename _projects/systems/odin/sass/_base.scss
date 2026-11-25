@@ -87,12 +87,8 @@
   }
 }
 
-// The column: as wide as the page width, with the gutter kept at both sides on a narrow screen.
 .odin__main {
-  width: 100%;
-  max-width: $odin-page-width;
-  margin: 0 auto;
-  padding: 0 $odin-gutter;
+  @include odin-column;
 }
 
 // The first stop for a keyboard: off screen until it has focus.
@@ -102,7 +98,7 @@
   top: -4rem;
   padding: $odin-gap-tight $odin-gap;
   background-color: var(--odin-paper);
-  border: 1px solid var(--odin-rule);
+  border: $odin-rule-line;
 
   &:focus {
     top: $odin-gap-tight;

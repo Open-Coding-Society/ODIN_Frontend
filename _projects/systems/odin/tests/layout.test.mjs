@@ -160,11 +160,46 @@ test('the header and the footer build their menus from the backend, with no link
   }
   // The header's menu marks the page being shown
   assert.match(lists[0], /\bdata-odin-current="item\.current"/);
+  // A backend that lists no page for the menu leaves the menus out, and the page still shows
+  const guarded = [...markup(layout).matchAll(/<(nav|ul)\b[^>]*\bdata-odin-if="menu"[^>]*>/g)];
+  assert.equal(guarded.length, 2);
+});
+
+test('each menu is a nav with a label from the interface file', () => {
+  const navs = [...markup(layout).matchAll(/<nav\b[^>]*>/g)].map((match) => match[0]);
+  assert.equal(navs.length, 2);
+  assert.match(navs[0], /aria-label="\{\{ ui\.menu \| escape \}\}"/);
+  assert.match(navs[1], /aria-label="\{\{ ui\.footer_menu \| escape \}\}"/);
+});
+
+test('the footer shows the tagline, the copyright line and a link for each network the backend has', () => {
+  const footer = markup(layout).match(/<footer\b[\s\S]*?<\/footer>/)[0];
+  assert.match(footer, /data-odin-text="site\.tagline"/);
+  assert.match(footer, /data-odin-text="site\.copyright"/);
+  for (const network of ['instagram', 'linkedin']) {
+    assert.match(footer, new RegExp(`<li data-odin-if="site\\.${network}"><a data-odin-href="site\\.${network}">\\{\\{ ui\\.${network} \\| escape \\}\\}</a></li>`));
+  }
+});
+
+test('every class the layout and the pages use is an ocs class or has a rule in the kit\'s styles', () => {
+  const styles = readdirSync(new URL('sass/', kit)).map((name) => read(`sass/${name}`)).join('\n');
+  for (const path of ['layouts/site.html', ...pages]) {
+    const classes = [...markup(read(path)).matchAll(/\bclass="([^"]+)"/g)].flatMap((match) => match[1].split(/\s+/));
+    for (const name of classes.filter((word) => word.startsWith('odin'))) {
+      assert.ok(styles.includes(`.${name}`), `${path}: ${name} has no rule in sass/`);
+    }
+  }
+});
+
+test('the page script starts the tone watcher on the html element', () => {
+  assert.match(layout, /watchTone\(document\.documentElement, \{ styleOf: getComputedStyle, Observer: MutationObserver \}\);/);
 });
 
 test('the logo links home through the address _config.yml gives the home page', () => {
   assert.match(layout, /<a class="odin__brand" href="\{\{ site\.odin\.routes\.home \| relative_url \}\}">/);
-  assert.match(layout, /<img class="odin__logo" data-odin-src="site\.logo_dark" data-odin-alt="site\.name">/);
+  // One logo, in the header. Its description names the site, which is what the link leads to
+  const logos = [...markup(layout).matchAll(/<img class="odin__logo"[^>]*>/g)].map((match) => match[0]);
+  assert.deepEqual(logos, ['<img class="odin__logo" data-odin-src="site.logo_dark" data-odin-alt="site.name">']);
 });
 
 test('every image in the layout and the pages gets its description from the backend', () => {
