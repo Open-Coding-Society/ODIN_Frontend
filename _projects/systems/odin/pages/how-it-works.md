@@ -10,10 +10,14 @@ permalink: /how-it-works/
 </div>
 <div class="odin__pair">
   <p class="ocs__lead" data-odin-text="sections.how_it_works.text"></p>
-  <img class="odin__photo" data-odin-src="sections.how_it_works.image" data-odin-alt="sections.how_it_works.image_alt">
+  <figure>
+    <img class="odin__photo" data-odin-src="sections.how_it_works.image" data-odin-alt="sections.how_it_works.image_alt">
+  </figure>
 </div>
 <div class="odin__pair">
-  <img class="odin__photo" data-odin-src="sections.features.image" data-odin-alt="sections.features.image_alt">
+  <figure>
+    <img class="odin__photo" data-odin-src="sections.features.image" data-odin-alt="sections.features.image_alt">
+  </figure>
   <dl class="odin__facts" data-odin-each="sections.features.items">
     <template>
       <div class="odin__fact">

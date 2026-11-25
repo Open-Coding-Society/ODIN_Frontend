@@ -78,7 +78,7 @@
     border-top: $odin-rule-line;
     font-size: $odin-text-caption;
 
-    @media (max-width: $breakpoint-mobile) {
+    @include odin-narrow {
       grid-template-columns: minmax(0, 1fr);
     }
   }

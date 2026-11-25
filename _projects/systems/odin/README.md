@@ -75,7 +75,7 @@ Two choices that differ from other kits, and why:
 | Page file | Address | Shows |
 |---|---|---|
 | `pages/home.md` | `/` | The hero's title and line, until the home page's own issue. |
-| `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation beside the eye tracking picture, and the headset photo beside the four features as a list of named facts. |
+| `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation beside the eye tracking picture, and the headset photo beside the features as a list of named facts. |
 | `pages/about.md` | `/about/` | The page title, the page's one line, the lens photo as a band across the page, and the mission's paragraphs. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
 

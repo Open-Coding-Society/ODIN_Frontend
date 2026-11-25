@@ -87,6 +87,14 @@ $odin-rule-line: 1px solid var(--odin-rule);
   padding-right: $odin-gutter;
 }
 
+// Rules for a screen no wider than a tablet held upright, where side by side becomes one under
+// the other.
+@mixin odin-narrow {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
 // Things one under another with the same gap between them, and none above the first.
 @mixin odin-flow($gap: $odin-gap) {
   > * + * {

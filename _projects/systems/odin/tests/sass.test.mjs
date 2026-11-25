@@ -103,7 +103,8 @@ test('every rule starts with .odin or is an .odin__ block, so the kit styles no 
       // A mixin's rules are placed by whoever includes it, and a nested rule is under its parent
       if (selector.startsWith('@mixin') || parents.some((parent) => parent.startsWith('@mixin'))) continue;
       if (selector.startsWith('@')) {
-        assert.match(selector, /^@(media|supports)\b/, `${name}: ${selector} is not an at-rule the kit uses`);
+        // A block handed to a mixin is placed where the mixin is included, so its rules are checked too
+        assert.match(selector, /^@(media|supports|include)\b/, `${name}: ${selector} is not an at-rule the kit uses`);
         continue;
       }
       if (parents.some((parent) => !parent.startsWith('@'))) continue;
