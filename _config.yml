@@ -28,6 +28,7 @@ odin:
   # so adding a page to the menu means one line here and a page file, with no HTML to edit.
   routes:
     home: "/"
+    how_it_works: "/how-it-works/"
     about: "/about/"
     contact: "/contact/"
 

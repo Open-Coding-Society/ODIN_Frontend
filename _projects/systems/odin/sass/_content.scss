@@ -46,6 +46,24 @@
     }
   }
 
+  // Two things side by side, such as a photo and what is said about it. Each takes half the
+  // page, and on a narrow screen the second goes under the first. A pair after another pair
+  // keeps a section's space above it.
+  .odin__pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: $odin-space-block;
+
+    @media (max-width: $breakpoint-mobile) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .odin__pair + .odin__pair {
+    margin-top: $odin-space-section;
+  }
+
   // Named facts, one to a row with a thin rule above: the name on the left, the fact beside it.
   // On a narrow screen the fact goes under its name.
   .odin__facts {
