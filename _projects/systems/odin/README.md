@@ -76,8 +76,8 @@ Two choices that differ from other kits, and why:
 
 | Page file | Address | Shows |
 |---|---|---|
-| `pages/home.md` | `/` | The opening (the short line, ODIN's name, the one line, the contact button, the regulatory notice and the headset photo), the figures as a list with thin rules, and the closing paragraph with a link on to the how it works page. |
-| `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation beside the eye tracking picture, and the headset photo beside the features as a list of named facts, with the regulatory notice under them. |
+| `pages/home.md` | `/` | The opening (the short line, ODIN's name, the one line, the regulatory notice, the contact button and the headset photo), the figures as a list with thin rules, and the closing paragraph with a link on to the how it works page. |
+| `pages/how-it-works.md` | `/how-it-works/` | The page title, the explanation with the regulatory notice under it beside the eye tracking picture, and the headset photo beside the features as a list of named facts. |
 | `pages/about.md` | `/about/` | The page title, the page's one line, the lens photo as a band across the page, and the mission's paragraphs. |
 | `pages/not-found.md` | `/404.html` | What a visitor sees at an address the site does not have: the backend's words and a button home. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |

@@ -141,8 +141,13 @@ test('the not found page has the backend\'s words and a way home', () => {
   assert.match(button, /\bdata-odin-text="sections\.message\.action"/);
 });
 
-test('the pages that make the product\'s claims carry the regulatory notice in their body', () => {
+test('the pages that make the product\'s claims carry the regulatory notice right under the claim', () => {
+  const home = read('pages/home.md');
+  assert.match(home, /data-odin-text="sections\.hero\.text"><\/p>\s*<p data-odin-text="site\.notice"><\/p>/);
+  const how = read('pages/how-it-works.md');
+  assert.match(how, /data-odin-text="sections\.how_it_works\.text"><\/p>\s*<p data-odin-text="site\.notice"><\/p>/);
+  // The notice is never optional on a page
   for (const file of ['pages/home.md', 'pages/how-it-works.md']) {
-    assert.match(read(file), /<p data-odin-text="site\.notice"><\/p>/, `${file} does not show the notice`);
+    assert.ok(!/data-odin-if="site\.notice"/.test(read(file)), `${file} guards the notice`);
   }
 });

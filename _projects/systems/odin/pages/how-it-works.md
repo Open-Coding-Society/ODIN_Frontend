@@ -9,7 +9,10 @@ permalink: /how-it-works/
   <h1 data-odin-text="page.title"></h1>
 </div>
 <div class="odin__pair">
-  <p class="ocs__lead" data-odin-text="sections.how_it_works.text"></p>
+  <div class="ocs__stack">
+    <p class="ocs__lead" data-odin-text="sections.how_it_works.text"></p>
+    <p data-odin-text="site.notice"></p>
+  </div>
   <figure>
     <img class="odin__photo" data-odin-src="sections.how_it_works.image" data-odin-alt="sections.how_it_works.image_alt">
   </figure>
@@ -18,16 +21,13 @@ permalink: /how-it-works/
   <figure>
     <img class="odin__photo" data-odin-src="sections.features.image" data-odin-alt="sections.features.image_alt">
   </figure>
-  <div class="ocs__stack">
-    <dl class="odin__facts" data-odin-each="sections.features.items">
-      <template>
-        <div class="odin__fact">
-          <dt data-odin-text="item.title"></dt>
-          <dd data-odin-text="item.text"></dd>
-        </div>
-      </template>
-    </dl>
-    <p data-odin-text="site.notice"></p>
-  </div>
+  <dl class="odin__facts" data-odin-each="sections.features.items">
+    <template>
+      <div class="odin__fact">
+        <dt data-odin-text="item.title"></dt>
+        <dd data-odin-text="item.text"></dd>
+      </div>
+    </template>
+  </dl>
 </div>
 <!-- markdownlint-restore -->
