@@ -3,12 +3,10 @@
 
 .odin {
   .odin__status {
+    @include odin-flow;
+
     max-width: 34rem;
     padding: $odin-space-section 0;
-
-    > * + * {
-      margin-top: $odin-gap;
-    }
 
     // A message about the page, not the page's title
     h1 {

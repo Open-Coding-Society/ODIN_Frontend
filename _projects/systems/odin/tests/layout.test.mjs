@@ -186,7 +186,12 @@ test('every class the layout and the pages use is an ocs class or has a rule in 
   for (const path of ['layouts/site.html', ...pages]) {
     const classes = [...markup(read(path)).matchAll(/\bclass="([^"]+)"/g)].flatMap((match) => match[1].split(/\s+/));
     for (const name of classes.filter((word) => word.startsWith('odin'))) {
-      assert.ok(styles.includes(`.${name}`), `${path}: ${name} has no rule in sass/`);
+      // A variant is written inside its block as &--variant
+      const [block, variant] = name.split('--');
+      const written = variant === undefined
+        ? styles.includes(`.${name}`)
+        : styles.includes(`.${name}`) || (styles.includes(`.${block} {`) && styles.includes(`&--${variant} {`));
+      assert.ok(written, `${path}: ${name} has no rule in sass/`);
     }
   }
 });

@@ -75,11 +75,11 @@ Two choices that differ from other kits, and why:
 | Page file | Address | Shows |
 |---|---|---|
 | `pages/home.md` | `/` | The hero's title and line, until the home page's own issue. |
-| `pages/about.md` | `/about/` | The page title, the lens photo as a band across the page, and the mission's paragraphs. |
+| `pages/about.md` | `/about/` | The page title, the page's one line, the lens photo as a band across the page, and the mission's paragraphs. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
 
 The parts pages are built from are in `sass/_content.scss`: `odin__page-head` (a page's title and
-the line under it), `odin__photo` (a photo; `wide` makes it a band), `odin__prose` (running text), `odin__facts` with `odin__fact` rows (named facts with a thin rule between
+the line under it), `odin__photo` (a photo; `odin__photo--wide` is a band across the page), `odin__prose` (running text), `odin__facts` with `odin__fact` rows (named facts with a thin rule between
 them) and `odin__partner` with `odin__partner-logo` (another organisation's logo and its link).
 
 ## Styles

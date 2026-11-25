@@ -68,6 +68,11 @@ html.odin:not(.user-theme-active) {
   --odin-font-display: var(--pref-font-family);
 }
 
+// The shapes a photo's space is kept in before its file arrives: a photo, and a band across the
+// page.
+$odin-shape-photo: 3 / 2;
+$odin-shape-band: 21 / 9;
+
 // The thin line between parts of a page.
 $odin-rule-line: 1px solid var(--odin-rule);
 
@@ -80,6 +85,13 @@ $odin-rule-line: 1px solid var(--odin-rule);
   margin-right: auto;
   padding-left: $odin-gutter;
   padding-right: $odin-gutter;
+}
+
+// Things one under another with the same gap between them, and none above the first.
+@mixin odin-flow($gap: $odin-gap) {
+  > * + * {
+    margin-top: $gap;
+  }
 }
 
 // A list that is a row or a column of links, not bullet points.

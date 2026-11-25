@@ -3,12 +3,10 @@
 .odin {
   // A page's title and the line under it.
   .odin__page-head {
+    @include odin-flow;
+
     max-width: $odin-line-width;
     padding: $odin-space-section 0 $odin-space-block;
-
-    > * + * {
-      margin-top: $odin-gap;
-    }
   }
 
   // The shared lead, a size up, for the one line under a page's title.
@@ -17,34 +15,34 @@
     line-height: 1.45;
   }
 
-  // A photo. It fills the width it is given, and its shape is kept before the file arrives.
-  // `wide` is a band across the page, cut to a wide shape around the photo's middle.
+  // A photo. It fills the width it is given. A photo's own shape is used once its file arrives;
+  // until then its space is kept in a usual photo's shape. The wide variant is a band across the
+  // page, cut to that shape around the photo's middle on a wide screen.
   .odin__photo {
     width: 100%;
-    aspect-ratio: auto 3 / 2;
-    object-fit: cover;
+    aspect-ratio: auto $odin-shape-photo;
 
-    &.wide {
-      aspect-ratio: 21 / 9;
+    &--wide {
+      aspect-ratio: $odin-shape-band;
+      object-fit: cover;
 
       @media (max-width: $breakpoint-mobile) {
-        aspect-ratio: 3 / 2;
+        aspect-ratio: $odin-shape-photo;
       }
     }
   }
 
-  // Running text: a line no longer than reads well, with a gap between paragraphs. It sits in
-  // the second of the page's columns, level with the facts of a list.
+  // Running text: a line no longer than reads well, with a gap between paragraphs and a
+  // section's space above. On a wide screen it starts where the facts of a list start: a
+  // quarter of the way across, past the gap between a list's two columns.
   .odin__prose {
-    max-width: $odin-line-width;
-    padding: $odin-space-block 0 0;
+    @include odin-flow;
 
-    > * + * {
-      margin-top: $odin-gap;
-    }
+    max-width: $odin-line-width;
+    padding: $odin-space-section 0 0;
 
     @media (min-width: $breakpoint-mobile + 1px) {
-      margin-left: 25%;
+      margin-left: calc(25% + #{$odin-space-block * 0.75});
     }
   }
 
