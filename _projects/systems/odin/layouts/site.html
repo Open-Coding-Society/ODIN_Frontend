@@ -28,6 +28,18 @@
 </head>
 <body>
   <a class="odin__skip" href="#odin-main">{{ ui.skip | escape }}</a>
+  <header class="odin__header" data-odin-state="ready" hidden>
+    <a class="odin__brand" href="{{ site.odin.routes.home | relative_url }}">
+      <img class="odin__logo" data-odin-src="site.logo_dark" data-odin-alt="site.name">
+    </a>
+    <nav class="odin__nav" aria-label="{{ ui.menu | escape }}">
+      <ul class="odin__menu" data-odin-each="menu">
+        <template>
+          <li><a class="odin__menu-link" data-odin-route="item.name" data-odin-text="item.menu" data-odin-current="item.current"></a></li>
+        </template>
+      </ul>
+    </nav>
+  </header>
   <main class="odin__main" id="odin-main" tabindex="-1" data-odin-main>
     <div class="odin__status" role="status" data-odin-state="loading" hidden>
       <p class="odin__status-text">{{ ui.loading | escape }}</p>
@@ -44,6 +56,24 @@
       <p class="odin__status">{{ ui.noscript | escape }}</p>
     </noscript>
   </main>
+  <footer class="odin__footer" data-odin-state="ready" hidden>
+    <div class="odin__footer-about">
+      <img class="odin__logo" data-odin-src="site.logo_dark" data-odin-alt="site.name">
+      <p data-odin-text="site.tagline"></p>
+    </div>
+    <nav class="odin__footer-nav" aria-label="{{ ui.footer_menu | escape }}">
+      <ul class="odin__footer-links" data-odin-each="menu">
+        <template>
+          <li><a data-odin-route="item.name" data-odin-text="item.menu"></a></li>
+        </template>
+      </ul>
+      <ul class="odin__footer-links">
+        <li data-odin-if="site.instagram"><a data-odin-href="site.instagram" rel="noopener">{{ ui.instagram | escape }}</a></li>
+        <li data-odin-if="site.linkedin"><a data-odin-href="site.linkedin" rel="noopener">{{ ui.linkedin | escape }}</a></li>
+      </ul>
+    </nav>
+    <p class="odin__footer-legal" data-odin-text="site.copyright"></p>
+  </footer>
   <script>
     // Runs on its own, before the modules below. It shows the loading part, which stays hidden
     // for a visitor without JavaScript, and shows the error part if a module cannot be loaded.
@@ -63,6 +93,9 @@
     import { pythonURI } from '{{ site.baseurl }}/assets/js/api/config.js';
     import { createContent } from '{{ site.baseurl }}/assets/js/projects/odin/content.js';
     import { siteRoutes, startPage } from '{{ site.baseurl }}/assets/js/projects/odin/page.js';
+    import { watchTone } from '{{ site.baseurl }}/assets/js/projects/odin/tone.js';
+
+    watchTone(document.documentElement, { styleOf: getComputedStyle, Observer: MutationObserver });
 
     startPage({
       document,

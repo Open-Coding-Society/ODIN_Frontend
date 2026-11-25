@@ -28,8 +28,9 @@ $odin-gutter: clamp(1.25rem, 4vw, 3rem);
 // Small gaps come from the shared OCS scale (open-coding/mixins/_variables.scss).
 $odin-gap-tight: $spacing-xxs;
 $odin-gap: $spacing-md;
-// The space above and below a section of a page. The shared scale stops at 30px, so this one is
-// the kit's own.
+// The space between the blocks of a page, from the shared scale, and the space above and below a
+// whole section. The shared scale stops at 30px, so the larger one is the kit's own.
+$odin-space-block: $spacing-xl;
 $odin-space-section: clamp(3.5rem, 8vw, 6rem);
 
 // ODIN's defaults, for a visitor who has not picked a theme. They are written into the site's own

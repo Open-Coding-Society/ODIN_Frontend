@@ -94,11 +94,13 @@ test('every page starts with front matter that names the ODIN layout and its own
 test('the layout holds the three states, all hidden until a script shows one', () => {
   const tags = [...markup(layout).matchAll(/<[a-z]+\b[^>]*\bdata-odin-state="[a-z]+"[^>]*>/g)].map((match) => match[0]);
   const state = (tag) => tag.match(/data-odin-state="([a-z]+)"/)[1];
-  assert.deepEqual(tags.map(state), ['loading', 'error', 'ready']);
+  // The header, then the three states of the page itself, then the footer
+  assert.deepEqual(tags.map(state), ['ready', 'loading', 'error', 'ready', 'ready']);
+  assert.deepEqual(tags.map((tag) => tag.match(/^<([a-z]+)/)[1]), ['header', 'div', 'div', 'div', 'footer']);
   // With JavaScript off no state shows, and the noscript line says why
   for (const tag of tags) assert.match(tag, /\shidden[\s>]/, `the ${state(tag)} part is not hidden to start with`);
-  assert.match(tags[0], /\brole="status"/);
-  assert.match(tags[1], /\brole="alert"/);
+  assert.match(tags[1], /\brole="status"/);
+  assert.match(tags[2], /\brole="alert"/);
   assert.match(layout, /<noscript>\s*<p class="odin__status">\{\{ ui\.noscript \| escape \}\}<\/p>\s*<\/noscript>/);
   // The page's own content sits in the ready part, so none of it shows until the backend answers
   assert.match(markup(layout), /data-odin-state="ready" hidden>\s*\{\{ content \}\}\s*<\/div>/);
@@ -125,6 +127,7 @@ test('the page script imports config.js and the odin modules from the site, with
     '{{ site.baseurl }}/assets/js/api/config.js',
     '{{ site.baseurl }}/assets/js/projects/odin/content.js',
     '{{ site.baseurl }}/assets/js/projects/odin/page.js',
+    '{{ site.baseurl }}/assets/js/projects/odin/tone.js',
   ]);
   // Liquid values reach JavaScript through jsonify
   for (const value of ['page_name', 'site.odin.routes', 'site.baseurl', 'ui.loading', 'ui.error_title']) {
@@ -145,4 +148,30 @@ test('every page has an address in _config.yml, and every address there has a pa
   assert.ok(routes.length > 0);
   const addresses = pages.map((path) => read(path).match(/^permalink: (\/\S*)$/m)[1]);
   assert.deepEqual([...routes].sort(), [...addresses].sort());
+});
+
+test('the header and the footer build their menus from the backend, with no link written in', () => {
+  const lists = [...markup(layout).matchAll(/<ul\b[^>]*\bdata-odin-each="menu"[^>]*>\s*<template>([\s\S]*?)<\/template>/g)].map((match) => match[1]);
+  assert.equal(lists.length, 2);
+  for (const template of lists) {
+    assert.match(template, /\bdata-odin-route="item\.name"/);
+    assert.match(template, /\bdata-odin-text="item\.menu"/);
+    assert.ok(!/\bhref=/.test(template), 'a menu link has an address written in');
+  }
+  // The header's menu marks the page being shown
+  assert.match(lists[0], /\bdata-odin-current="item\.current"/);
+});
+
+test('the logo links home through the address _config.yml gives the home page', () => {
+  assert.match(layout, /<a class="odin__brand" href="\{\{ site\.odin\.routes\.home \| relative_url \}\}">/);
+  assert.match(layout, /<img class="odin__logo" data-odin-src="site\.logo_dark" data-odin-alt="site\.name">/);
+});
+
+test('every image in the layout and the pages gets its description from the backend', () => {
+  for (const path of ['layouts/site.html', ...pages]) {
+    for (const [image] of markup(read(path)).matchAll(/<img\b[^>]*>/g)) {
+      assert.match(image, /\bdata-odin-src="[a-z_.]+"/, `${path}: ${image} has no source from the backend`);
+      assert.match(image, /\bdata-odin-alt="[a-z_.]+"/, `${path}: ${image} has no description from the backend`);
+    }
+  }
 });

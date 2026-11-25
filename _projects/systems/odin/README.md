@@ -17,12 +17,13 @@ from. This file lists what the kit holds as each part is added.
 | Path | What it is |
 |---|---|
 | `distribution.json` | Where each source is published. Every destination is an `odin` folder that `.gitignore` covers. |
-| `layouts/site.html` | The whole document of every ODIN page: its own head and body, with no OCS top bar. It loads the OCS stylesheet and the theme script. |
+| `layouts/site.html` | The whole document of every ODIN page: its own head, header, menu and footer, with no OCS top bar. It loads the OCS stylesheet and the theme script. The menu is built from the pages the backend lists that have an address in `_config.yml`. |
 | `pages/` | One file per page. Each names the ODIN layout and its own address. |
 | `data/ui.yml` | The words of the site's own interface: the skip link, the loading line and the connection error. Not ODIN's content. |
 | `js/content.js` | Asks the backend for the site basics, the page list, one page and an image's address. |
 | `js/bind.js` | Writes content into markup, by the marks listed below. |
 | `js/page.js` | Shows one page: loads its content, writes it, names the tab and switches the page's state. |
+| `js/tone.js` | Writes `data-odin-tone` (`light` or `dark`) on the html element from the page's real background, so the one black logo can be turned white on a dark theme. |
 | `sass/` | The kit's styles. `main.scss` imports the partials; `_tokens.scss` is the only file that names a colour or a typeface. |
 | `tests/` | Node tests. Run `node --test _projects/systems/odin/tests/*.test.mjs` from the repo root. |
 
