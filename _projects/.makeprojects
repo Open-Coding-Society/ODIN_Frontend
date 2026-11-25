@@ -22,5 +22,6 @@ systems/profile:dev
 systems/login:dev
 systems/topics:dev
 systems/scraper
+systems/odin:dev
 
 # === FLAT STRUCTURE (legacy/uncategorized) ===
