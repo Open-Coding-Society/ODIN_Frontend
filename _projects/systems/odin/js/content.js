@@ -21,16 +21,21 @@ export class ContentUnavailableError extends Error {
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isText = (value) => typeof value === 'string' && value.trim() !== '';
 
-// `baseUrl` and `fetchOptions` are pythonURI and fetchOptions from assets/js/api/config.js. The
-// page hands them in, so this module can be tested without a browser.
-export function createContent({ baseUrl, fetchOptions = {}, fetch = globalThis.fetch, timeLimitMs = DEFAULT_TIME_LIMIT_MS }) {
+// The content is public, so it is asked for without the visitor's login cookie and without the
+// headers a signed-in request carries. A plain request also needs no CORS preflight, which
+// halves the requests a page makes.
+const PUBLIC_REQUEST = { method: 'GET', mode: 'cors', credentials: 'omit' };
+
+// `baseUrl` is pythonURI from assets/js/api/config.js. The page hands it in, so this module can
+// be tested without a browser.
+export function createContent({ baseUrl, fetch = globalThis.fetch, timeLimitMs = DEFAULT_TIME_LIMIT_MS }) {
   // The backend's JSON answer to a GET of this path. A request that fails, is refused or takes
   // too long is unavailable content. The time limit also ends a request that never answers.
   async function ask(path) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeLimitMs);
     try {
-      const response = await fetch(`${baseUrl}${path}`, { ...fetchOptions, method: 'GET', signal: controller.signal });
+      const response = await fetch(`${baseUrl}${path}`, { ...PUBLIC_REQUEST, signal: controller.signal });
       if (!response.ok) throw new Error(`The backend answered ${response.status}`);
       return await response.json();
     } catch (cause) {
@@ -44,7 +49,10 @@ export function createContent({ baseUrl, fetchOptions = {}, fetch = globalThis.f
     // The basics every page shows: the company name, how to reach it, its logos and footer lines.
     async site() {
       const answer = await ask(SITE_PATH);
-      if (!isObject(answer)) throw new ContentUnavailableError(`GET ${SITE_PATH} answered without the site basics`);
+      // The name is in every tab's title, so basics without one cannot be shown
+      if (!isObject(answer) || !isText(answer.name)) {
+        throw new ContentUnavailableError(`GET ${SITE_PATH} answered without the site basics`);
+      }
       return answer;
     },
 

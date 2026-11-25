@@ -7,20 +7,16 @@
 //   data-odin-alt         an image's description
 //   data-odin-content     a meta element's content
 //   data-odin-href        a link to another site (https only)
-//   data-odin-tel         a link that opens the phone app, from a phone number
-//   data-odin-mail        a link that opens the email app, from an email address
-//   data-odin-map         a link that opens a map, from a street address
 //   data-odin-route       a link to one of this site's pages, from the page's name
 //   data-odin-current     marks the link of the page being shown
 //   data-odin-if          shows the element only when the content has the value
 //   data-odin-each        repeats the element's <template> once for each item of a list; inside
-//                         the template, paths that start with item. read from that item
+//                         the template, paths that start with item. read from that item. The
+//                         list element holds only the list, so it takes no other mark
 //
 // Values go in as text and attributes, never as HTML, so nothing the backend sends can run in
 // the page. Everything is checked before anything is written: a value the markup asks for and
 // the content does not have throws, and the page is left as it was.
-
-const MAP_SEARCH = 'https://www.google.com/maps/search/?api=1&query=';
 
 export const isText = (value) => typeof value === 'string' && value.trim() !== '';
 
@@ -34,45 +30,29 @@ export function lookup(context, path) {
   return value;
 }
 
-// True for content a visitor could be shown: text, a list with something in it, or true.
+// True for content a visitor could be shown: text, a number, true, a list with something in it,
+// or a record such as a whole section.
 function hasValue(value) {
   if (Array.isArray(value)) return value.length > 0;
-  return isText(value) || value === true;
+  if (value !== null && typeof value === 'object') return true;
+  return isText(value) || typeof value === 'number' || value === true;
 }
 
-function text(value, path) {
+// The value, which must be text a visitor can read. Anything else stops the page.
+function requireText(value, path) {
   if (!isText(value)) throw new Error(`The content has no text at ${path}`);
   return value;
-}
-
-// A phone number as a tel: address, or null for one with letters or an extension.
-function telAddress(value) {
-  const number = value.replace(/[\s().-]/g, '');
-  return /^\+?\d{7,15}$/.test(number) ? `tel:${number}` : null;
-}
-
-// An email address as a mailto: address, or null for one with a character that would change
-// what the link does.
-function mailAddress(value) {
-  return /^[^\s@?#%&]+@[^\s@?#%&]+\.[^\s@?#%&]+$/.test(value) ? `mailto:${value}` : null;
-}
-
-// Sets the link's address, or takes it away when the value makes no clean address. The text of
-// such a link is still shown, as plain text.
-function setAddress(element, address) {
-  if (address === null) element.removeAttribute('href');
-  else element.setAttribute('href', address);
 }
 
 // One entry per attribute: given the element, the value at its path and the path, it checks the
 // value and returns the write.
 const MARKS = {
   'data-odin-text': (element, value, path) => {
-    const words = text(value, path);
+    const words = requireText(value, path);
     return () => { element.textContent = words; };
   },
   'data-odin-paragraphs': (element, value, path) => {
-    const paragraphs = text(value, path).split(/\n\s*\n/).map((part) => part.trim()).filter((part) => part !== '');
+    const paragraphs = requireText(value, path).split(/\n\s*\n/).map((part) => part.trim()).filter((part) => part !== '');
     return () => {
       element.replaceChildren(...paragraphs.map((words) => {
         const paragraph = element.ownerDocument.createElement('p');
@@ -82,32 +62,20 @@ const MARKS = {
     };
   },
   'data-odin-src': (element, value, path, { imageUrl }) => {
-    const address = imageUrl(text(value, path));
+    const address = imageUrl(requireText(value, path));
     return () => element.setAttribute('src', address);
   },
   'data-odin-alt': (element, value, path) => {
-    const words = text(value, path);
+    const words = requireText(value, path);
     return () => element.setAttribute('alt', words);
   },
   'data-odin-content': (element, value, path) => {
-    const words = text(value, path);
+    const words = requireText(value, path);
     return () => element.setAttribute('content', words);
   },
   'data-odin-href': (element, value, path) => {
     if (typeof value !== 'string' || !value.startsWith('https://')) throw new Error(`The content has no https link at ${path}`);
     return () => element.setAttribute('href', value);
-  },
-  'data-odin-tel': (element, value, path) => {
-    const address = telAddress(text(value, path));
-    return () => setAddress(element, address);
-  },
-  'data-odin-mail': (element, value, path) => {
-    const address = mailAddress(text(value, path));
-    return () => setAddress(element, address);
-  },
-  'data-odin-map': (element, value, path) => {
-    const address = MAP_SEARCH + encodeURIComponent(text(value, path));
-    return () => element.setAttribute('href', address);
   },
   'data-odin-route': (element, value, path, { routes }) => {
     if (!isText(value) || !Object.hasOwn(routes, value)) throw new Error(`This site has no page for ${path}`);
@@ -144,6 +112,8 @@ function plan(element, context, tools, writes) {
   }
   const list = element.getAttribute('data-odin-each');
   if (list !== null) {
+    const extra = Object.keys(MARKS).find((attribute) => element.getAttribute(attribute) !== null);
+    if (extra !== undefined) throw new Error(`The list for ${list} also has ${extra}, which a list element cannot take`);
     planList(element, lookup(context, list), list, context, tools, writes);
     return;
   }

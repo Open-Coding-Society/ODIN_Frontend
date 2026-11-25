@@ -28,7 +28,7 @@ test('the layout is a whole document of its own, not a page inside the shared OC
   assert.match(layout, /<html lang="en" class="odin">/);
   assert.match(layout, /<meta charset="utf-8">/);
   assert.match(layout, /<meta name="viewport" content="width=device-width, initial-scale=1">/);
-  assert.match(layout, /<main class="odin__main" id="odin-main">/);
+  assert.match(layout, /<main class="odin__main" id="odin-main"[\s>]/);
 });
 
 test('the layout loads the OCS stylesheet and the theme script from the site, with the baseurl', () => {
@@ -91,14 +91,32 @@ test('every page starts with front matter that names the ODIN layout and its own
   assert.equal(new Set(addresses).size, addresses.length, 'two pages share an address');
 });
 
-test('the layout holds the three states, and only the loading part shows before the script runs', () => {
-  const parts = [...markup(layout).matchAll(/<[a-z]+[^>]*data-odin-state="([a-z]+)"[^>]*>/g)].map((match) => [match[1], / hidden>?/.test(match[0])]);
-  assert.deepEqual(parts, [['loading', false], ['error', true], ['ready', true]]);
-  assert.match(layout, /role="status" data-odin-state="loading"/);
-  assert.match(layout, /role="alert" data-odin-state="error"/);
+test('the layout holds the three states, all hidden until a script shows one', () => {
+  const tags = [...markup(layout).matchAll(/<[a-z]+\b[^>]*\bdata-odin-state="[a-z]+"[^>]*>/g)].map((match) => match[0]);
+  const state = (tag) => tag.match(/data-odin-state="([a-z]+)"/)[1];
+  assert.deepEqual(tags.map(state), ['loading', 'error', 'ready']);
+  // With JavaScript off no state shows, and the noscript line says why
+  for (const tag of tags) assert.match(tag, /\shidden[\s>]/, `the ${state(tag)} part is not hidden to start with`);
+  assert.match(tags[0], /\brole="status"/);
+  assert.match(tags[1], /\brole="alert"/);
+  assert.match(layout, /<noscript>\s*<p class="odin__status">\{\{ ui\.noscript \| escape \}\}<\/p>\s*<\/noscript>/);
   // The page's own content sits in the ready part, so none of it shows until the backend answers
   assert.match(markup(layout), /data-odin-state="ready" hidden>\s*\{\{ content \}\}\s*<\/div>/);
-  assert.match(layout, /<button class="ocs__btn medium accent fill" type="button" data-odin-retry>/);
+  const retry = markup(layout).match(/<button\b[^>]*\bdata-odin-retry[^>]*>/)[0];
+  assert.match(retry, /\bclass="ocs__btn medium accent fill"/);
+  assert.match(retry, /\btype="button"/);
+});
+
+test('a plain script shows the loading part and stands in when the modules cannot be loaded', () => {
+  const scripts = [...layout.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)].filter((match) => match[2].trim() !== '');
+  assert.equal(scripts.length, 2);
+  const [plain, modules] = scripts;
+  assert.ok(!/type="module"/.test(plain[1] ?? ''), 'the first script is a module, which fails with the others');
+  assert.match(modules[1], /type="module"/);
+  assert.match(plain[2], /part\('loading'\)\.hidden = false;/);
+  // It listens on the script right after it, which is the module script
+  assert.match(plain[2], /document\.currentScript\.nextElementSibling\.addEventListener\('error'/);
+  assert.match(plain[2], /part\('error'\)\.hidden = false;/);
 });
 
 test('the page script imports config.js and the odin modules from the site, with the baseurl', () => {
@@ -112,6 +130,12 @@ test('the page script imports config.js and the odin modules from the site, with
   for (const value of ['page_name', 'site.odin.routes', 'site.baseurl', 'ui.loading', 'ui.error_title']) {
     assert.ok(layout.includes(`{{ ${value} | jsonify }}`), `${value} is not passed through jsonify`);
   }
+});
+
+test('the main part can take the keyboard after a retry', () => {
+  const main = markup(layout).match(/<main\b[^>]*>/)[0];
+  assert.match(main, /\btabindex="-1"/);
+  assert.match(main, /\bdata-odin-main\b/);
 });
 
 test('every page has an address in _config.yml, and every address there has a page', () => {

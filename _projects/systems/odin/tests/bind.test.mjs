@@ -9,24 +9,21 @@ const tools = {
   routes: { home: '/site/', about: '/site/about/' },
 };
 
+// Made-up content in the shape the backend sends. None of it is ODIN's.
 const context = {
-  site: {
-    name: 'ODIN Diagnostics', phone: '(805) 300-1100', email: 'contact@odin-diagnostics.com',
-    address: '9191 Towne Centre Dr Ste 150, San Diego, CA 92122', linkedin: 'https://www.linkedin.com/company/odin-diagnostics/',
-    logo_dark: 'logo-dark.svg',
-  },
+  site: { name: 'Example Site', linkedin: 'https://www.example.com/company/example/', logo_dark: 'logo.svg' },
   page: { name: 'home', description: null },
   menu: [{ name: 'home', menu: 'Home', current: true }, { name: 'about', menu: 'About', current: false }],
   sections: {
-    hero: { title: 'ODIN', kicker: null, image: 'product-headset.jpg', image_alt: 'Headset' },
+    hero: { title: 'Example', kicker: null, image: 'photo.jpg', image_alt: 'A photo' },
     mission: { text: 'First paragraph.\n\nSecond paragraph.\n\n\n  Third.  ' },
-    statistics: { items: [{ title: '50%', text: 'Of concussions go undetected' }, { title: '20%', text: 'High school athletes' }] },
+    statistics: { items: [{ title: '50%', text: 'First figure' }, { title: '20%', text: 'Second figure' }] },
     empty: { items: [] },
   },
 };
 
 test('lookup follows a path one step at a time and gives undefined when a step is missing', () => {
-  assert.equal(lookup(context, 'sections.hero.title'), 'ODIN');
+  assert.equal(lookup(context, 'sections.hero.title'), 'Example');
   assert.equal(lookup(context, 'sections.hero.kicker'), null);
   assert.equal(lookup(context, 'sections.nothing.title'), undefined);
   assert.equal(lookup(context, 'site.name.length'), undefined);
@@ -36,8 +33,8 @@ test('lookup follows a path one step at a time and gives undefined when a step i
 test('text goes into the element as text, never as markup', () => {
   const title = h('h1', { 'data-odin-text': 'sections.hero.title' });
   const root = h('main', {}, title);
-  bind(root, { sections: { hero: { title: '<b>ODIN</b>' } } }, tools);
-  assert.equal(title.textContent, '<b>ODIN</b>');
+  bind(root, { sections: { hero: { title: '<b>Example</b>' } } }, tools);
+  assert.equal(title.textContent, '<b>Example</b>');
   assert.equal(title.children.length, 0);
 });
 
@@ -62,14 +59,14 @@ test('paragraphs: one p for each paragraph of the value, with the space around e
 test('an image gets its address from the file name, and its description', () => {
   const image = h('img', { 'data-odin-src': 'sections.hero.image', 'data-odin-alt': 'sections.hero.image_alt' });
   bind(image, context, tools);
-  assert.equal(image.getAttribute('src'), 'http://backend/api/odin/image?name=product-headset.jpg');
-  assert.equal(image.getAttribute('alt'), 'Headset');
+  assert.equal(image.getAttribute('src'), 'http://backend/api/odin/image?name=photo.jpg');
+  assert.equal(image.getAttribute('alt'), 'A photo');
 });
 
 test('a meta element gets its content', () => {
   const meta = h('meta', { name: 'description', 'data-odin-content': 'site.name' });
   bind(meta, context, tools);
-  assert.equal(meta.getAttribute('content'), 'ODIN Diagnostics');
+  assert.equal(meta.getAttribute('content'), 'Example Site');
 });
 
 test('a link to another site is written only when it is an https address', () => {
@@ -79,37 +76,6 @@ test('a link to another site is written only when it is an https address', () =>
   for (const value of ['http://example.com', 'javascript:alert(1)', '//example.com', 'example.com', null]) {
     assert.throws(() => bind(h('a', { 'data-odin-href': 'value' }), { value }, tools), /no https link at value/);
   }
-});
-
-test('a phone number becomes a tel link, and one that is not a plain number stays text with no link', () => {
-  const link = h('a', { href: 'old', 'data-odin-tel': 'site.phone', 'data-odin-text': 'site.phone' });
-  bind(link, context, tools);
-  assert.equal(link.getAttribute('href'), 'tel:8053001100');
-  assert.equal(link.textContent, '(805) 300-1100');
-  for (const value of ['(805) 300-1100 ext. 4', 'call us', '12']) {
-    const plain = h('a', { href: 'old', 'data-odin-tel': 'value', 'data-odin-text': 'value' });
-    bind(plain, { value }, tools);
-    assert.equal(plain.getAttribute('href'), null);
-    assert.equal(plain.textContent, value);
-  }
-});
-
-test('an email address becomes a mailto link, and one with a character that changes the link does not', () => {
-  const link = h('a', { 'data-odin-mail': 'site.email' });
-  bind(link, context, tools);
-  assert.equal(link.getAttribute('href'), 'mailto:contact@odin-diagnostics.com');
-  for (const value of ['a@b.com?subject=x', 'a b@c.com', 'not an email', 'a@b.com&cc=d@e.com']) {
-    const plain = h('a', { href: 'old', 'data-odin-mail': 'value' });
-    bind(plain, { value }, tools);
-    assert.equal(plain.getAttribute('href'), null);
-  }
-});
-
-test('a street address becomes a link that opens a map search for it', () => {
-  const link = h('a', { 'data-odin-map': 'site.address' });
-  bind(link, context, tools);
-  assert.equal(link.getAttribute('href'),
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(context.site.address)}`);
 });
 
 test('a page name becomes that page\'s address, and a name with no address here throws', () => {
@@ -128,8 +94,18 @@ test('if: a part the content does not have is hidden, and what is inside it is n
   bind(root, context, tools);
   assert.equal(kicker.hidden, true);
   assert.equal(title.hidden, false);
-  assert.equal(title.textContent, 'ODIN');
+  assert.equal(title.textContent, 'Example');
   assert.equal(list.hidden, true);
+});
+
+test('if: a whole section, a number and true count as there; null, blank text and an empty list do not', () => {
+  const shown = (value) => {
+    const part = h('div', { 'data-odin-if': 'value' });
+    bind(part, { value }, tools);
+    return !part.hidden;
+  };
+  assert.deepEqual([{ title: 'x' }, {}, 7, 0, true, 'words', ['x']].map(shown), [true, true, true, true, true, true, true]);
+  assert.deepEqual([null, undefined, '', '  ', [], false].map(shown), [false, false, false, false, false, false]);
 });
 
 test('if and a value on the same element: the value is written only when it is there', () => {
@@ -145,7 +121,7 @@ test('each: the template is copied once for each item, and item paths read from 
   bind(list, context, tools);
   assert.equal(list.children[0], template);
   assert.deepEqual(list.children.slice(1).map((item) => item.children.map((part) => part.textContent)),
-    [['50%', 'Of concussions go undetected'], ['20%', 'High school athletes']]);
+    [['50%', 'First figure'], ['20%', 'Second figure']]);
 });
 
 test('each: filling a list again replaces the copies of the first time', () => {
@@ -162,7 +138,7 @@ test('each: a copy can still read the rest of the content, and mark the current 
   const links = menu.children.slice(1).map((item) => item.children[0]);
   assert.deepEqual(links.map((item) => [item.getAttribute('href'), item.textContent, item.getAttribute('aria-current')]),
     [['/site/', 'Home', 'page'], ['/site/about/', 'About', null]]);
-  assert.equal(menu.children[1].children[1].textContent, 'ODIN Diagnostics');
+  assert.equal(menu.children[1].children[1].textContent, 'Example Site');
 });
 
 test('each: a list with no template, or content with no list, throws and writes nothing', () => {
@@ -172,6 +148,11 @@ test('each: a list with no template, or content with no list, throws and writes 
   assert.throws(() => bind(list, context, tools), /no list at sections\.empty\.items/);
   assert.throws(() => bind(h('ul', { 'data-odin-each': 'site.name' }, h('template', {})), context, tools), /no list at site\.name/);
   assert.equal(list.children[1], kept);
+});
+
+test('each: a list element takes no other mark, so one is never silently skipped', () => {
+  const list = h('ul', { 'data-odin-each': 'sections.statistics.items', 'data-odin-text': 'site.name' }, h('template', {}, h('li')));
+  assert.throws(() => bind(list, context, tools), /also has data-odin-text/);
 });
 
 test('each: one item without a value the template asks for stops the whole page, with nothing written', () => {
@@ -188,7 +169,7 @@ test('marks deep inside the page are found, and an element with no mark is left 
   const plain = h('p', { class: 'kept' }, 'kept words');
   const root = h('main', {}, h('section', {}, h('div', {}, deep)), plain);
   bind(root, context, tools);
-  assert.equal(deep.textContent, 'ODIN Diagnostics');
+  assert.equal(deep.textContent, 'Example Site');
   assert.equal(plain.textContent, 'kept words');
   assert.deepEqual(plain.attributes, { class: 'kept' });
 });

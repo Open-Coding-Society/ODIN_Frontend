@@ -3,6 +3,6 @@
 skip: "Skip to content"
 loading: "Loading"
 error_title: "This page can't load right now"
-error_text: "The site could not reach its content. Check your connection, then try again."
+error_text: "The site could not load its content. Please try again in a moment."
 retry: "Try again"
 noscript: "This site needs JavaScript to load its content."

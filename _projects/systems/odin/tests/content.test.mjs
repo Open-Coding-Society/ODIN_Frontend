@@ -20,9 +20,10 @@ function fakeFetch(answers) {
   return { fetch, calls };
 }
 
-const SITE = { name: 'ODIN Diagnostics', phone: '(805) 300-1100' };
-const PAGES = { pages: [{ name: 'home', title: 'ODIN Diagnostics', description: null, menu: 'Home' }] };
-const HOME = { page: 'home', title: 'ODIN Diagnostics', description: 'One line.', sections: [{ name: 'hero', title: 'ODIN' }] };
+// Made-up content in the shape the backend sends. None of it is ODIN's.
+const SITE = { name: 'Example Site', phone: '555 0100' };
+const PAGES = { pages: [{ name: 'home', title: 'Example Site', description: null, menu: 'Home' }] };
+const HOME = { page: 'home', title: 'Example Site', description: 'One line.', sections: [{ name: 'hero', title: 'Example' }] };
 
 function contentWith(answers, options = {}) {
   const { fetch, calls } = fakeFetch(answers);
@@ -43,15 +44,12 @@ test('site, pages and page each ask the backend at their own address and return 
   }));
 });
 
-test('each request is a GET with the fetch options the page handed in and a signal that can end it', async () => {
-  const { content, calls } = contentWith({ [`${BASE}/api/odin/site`]: SITE }, {
-    fetchOptions: { method: 'POST', credentials: 'include', headers: { 'X-Origin': 'client' } },
-  });
+test('each request is a plain public GET: no login cookie, no extra headers, and a signal that can end it', async () => {
+  const { content, calls } = contentWith({ [`${BASE}/api/odin/site`]: SITE });
   await content.site();
-  assert.equal(calls[0].options.method, 'GET');
-  assert.equal(calls[0].options.credentials, 'include');
-  assert.deepEqual(calls[0].options.headers, { 'X-Origin': 'client' });
-  assert.ok(calls[0].options.signal instanceof AbortSignal);
+  const { signal, ...options } = calls[0].options;
+  assert.deepEqual(options, { method: 'GET', mode: 'cors', credentials: 'omit' });
+  assert.ok(signal instanceof AbortSignal);
 });
 
 test('a page name is encoded into the address', async () => {
@@ -94,8 +92,8 @@ test('a backend that never answers is given up on after the time limit, and the 
   assert.ok(ended, 'the request was left running');
 });
 
-test('site basics that are not an object are unavailable content', async () => {
-  for (const answer of [null, 'ODIN', ['ODIN']]) {
+test('site basics that are not an object, or have no name for the tab, are unavailable content', async () => {
+  for (const answer of [null, 'Example', ['Example'], {}, { name: '  ' }, { name: 7 }]) {
     const { content } = contentWith({ [`${BASE}/api/odin/site`]: () => ({ ok: true, status: 200, json: async () => answer }) });
     await assert.rejects(content.site(), ContentUnavailableError);
   }

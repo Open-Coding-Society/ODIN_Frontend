@@ -1,7 +1,10 @@
 // A small stand-in for the browser's document, for tests of the modules that write content into
 // markup. It keeps what those modules use: attributes, children, text, the hidden property, a
-// template's content, attribute selectors and click listeners. Text set on an element replaces
-// its children, as in a browser.
+// template's content, attribute selectors, click listeners and focus. Text set on an element
+// replaces its children, as in a browser.
+
+// The element that last took the keyboard's focus, in any fake document.
+export const focus = { element: null };
 
 class FakeFragment {
   constructor(children = []) {
@@ -95,7 +98,13 @@ export class FakeElement {
     (this.listeners[type] ??= []).push(listener);
   }
 
-  click() {
+  focus() {
+    focus.element = this;
+  }
+
+  // Runs the element's click listeners and resolves when what they started has finished. A
+  // browser's click() returns nothing, so this has a name of its own.
+  press() {
     return Promise.all((this.listeners.click ?? []).map((listener) => listener()));
   }
 }

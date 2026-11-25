@@ -33,8 +33,8 @@ Edit the sources here. Never edit a published copy.
 1. `_config.yml` lists each page's address under `odin.routes`, by the name the backend gives the
    page. A page file's `permalink` is one of those addresses. The layout finds the page's name
    from it.
-2. The layout's script hands `pythonURI` and `fetchOptions` from `assets/js/api/config.js` to
-   `createContent`, and calls `startPage`.
+2. The layout's script hands `pythonURI` from `assets/js/api/config.js` to `createContent`, and
+   calls `startPage`.
 3. `startPage` asks for `/api/odin/site`, `/api/odin/pages` and `/api/odin/page?name=<name>` at
    once, and writes the answers into the marked places of the whole document.
 4. The page has three states, on parts marked `data-odin-state`: `loading`, `error` and `ready`.
@@ -53,13 +53,20 @@ A mark is a data attribute whose value is a path into the content: `site.<key>` 
 | `data-odin-src`, `data-odin-alt` | An image's address (from its file name) and its description. |
 | `data-odin-content` | A `meta` element's content. |
 | `data-odin-href` | A link to another site. Only an `https` address is accepted. |
-| `data-odin-tel`, `data-odin-mail`, `data-odin-map` | A link that opens the phone app, the email app or a map, from a phone number, an email address or a street address. |
 | `data-odin-route` | A link to one of this site's pages, from the page's name. |
 | `data-odin-current` | `aria-current="page"` on the link of the page being shown. |
 | `data-odin-if` | Shows the element only when the content has the value. Use it for a part a section may not have. |
-| `data-odin-each` | Repeats the element's `template` once for each item of a list. Inside it, `item.<part>` reads from that item. |
+| `data-odin-each` | Repeats the element's `template` once for each item of a list. Inside it, `item.<part>` reads from that item. The list element takes no other mark. |
 
 Values go in as text and attributes, never as HTML.
+
+Two choices that differ from other kits, and why:
+
+- `content.js` is the kit's own client. Login's `Backend` has no time limit, and a page here must
+  give up on a backend that never answers and show its error state.
+- The content is public, so it is asked for with `credentials: 'omit'` and no extra headers, not
+  with the shared `fetchOptions`. That sends no login cookie for a public page and needs no CORS
+  preflight, which halves the requests a page makes.
 
 ## Styles
 
