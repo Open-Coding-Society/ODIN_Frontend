@@ -115,10 +115,15 @@ test('a plain script shows the loading part and stands in when the modules canno
   const [plain, modules] = scripts;
   assert.ok(!/type="module"/.test(plain[1] ?? ''), 'the first script is a module, which fails with the others');
   assert.match(modules[1], /type="module"/);
-  assert.match(plain[2], /part\('loading'\)\.hidden = false;/);
-  // It listens on the script right after it, which is the module script
-  assert.match(plain[2], /document\.currentScript\.nextElementSibling\.addEventListener\('error'/);
-  assert.match(plain[2], /part\('error'\)\.hidden = false;/);
+  assert.match(plain[2], /show\('loading'\);/);
+  // It listens from the window on the way down, where a script's own error can be caught
+  assert.match(plain[2], /window\.addEventListener\('error', \(event\) => \{[\s\S]*\}, true\);/);
+  assert.match(plain[2], /event\.target instanceof HTMLScriptElement/);
+  // Nothing in it reads the script after it, which does not exist yet while this one runs
+  assert.ok(!/nextElementSibling/.test(plain[2]));
+  assert.match(plain[2], /show\('error'\);/);
+  // Every part of a state is switched, not only the first: the header, the page and the footer are all ready parts
+  assert.match(plain[2], /querySelectorAll\('\[data-odin-state\]'\)/);
 });
 
 test('the page script imports config.js and the odin modules from the site, with the baseurl', () => {

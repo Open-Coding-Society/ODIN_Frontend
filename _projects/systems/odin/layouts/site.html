@@ -75,13 +75,18 @@
     // Runs on its own, before the modules below. It shows the loading part, which stays hidden
     // for a visitor without JavaScript, and shows the error part if a module cannot be loaded.
     (() => {
-      const part = (state) => document.querySelector(`[data-odin-state="${state}"]`);
-      part('loading').hidden = false;
-      document.currentScript.nextElementSibling.addEventListener('error', () => {
-        part('loading').hidden = true;
-        part('error').hidden = false;
+      // Shows every part of one state and hides the rest
+      const show = (state) => {
+        for (const part of document.querySelectorAll('[data-odin-state]')) part.hidden = part.dataset.odinState !== state;
+      };
+      show('loading');
+      // A script that cannot be loaded sends an error to itself, which does not travel up the
+      // page. Listening from the window as the event goes down catches it for any script.
+      window.addEventListener('error', (event) => {
+        if (!(event.target instanceof HTMLScriptElement)) return;
+        show('error');
         document.title = {{ ui.error_title | jsonify }};
-      });
+      }, true);
     })();
   </script>
   <script type="module">
