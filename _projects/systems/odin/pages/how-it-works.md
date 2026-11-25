@@ -18,13 +18,16 @@ permalink: /how-it-works/
   <figure>
     <img class="odin__photo" data-odin-src="sections.features.image" data-odin-alt="sections.features.image_alt">
   </figure>
-  <dl class="odin__facts" data-odin-each="sections.features.items">
-    <template>
-      <div class="odin__fact">
-        <dt data-odin-text="item.title"></dt>
-        <dd data-odin-text="item.text"></dd>
-      </div>
-    </template>
-  </dl>
+  <div class="ocs__stack">
+    <dl class="odin__facts" data-odin-each="sections.features.items">
+      <template>
+        <div class="odin__fact">
+          <dt data-odin-text="item.title"></dt>
+          <dd data-odin-text="item.text"></dd>
+        </div>
+      </template>
+    </dl>
+    <p data-odin-text="site.notice"></p>
+  </div>
 </div>
 <!-- markdownlint-restore -->

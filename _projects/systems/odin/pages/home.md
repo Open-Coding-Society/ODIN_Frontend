@@ -11,6 +11,7 @@ permalink: /
     <h1 data-odin-text="sections.hero.title"></h1>
     <p class="ocs__lead" data-odin-text="sections.hero.text"></p>
     <p data-odin-if="pages.contact"><a class="ocs__btn large accent fill" data-odin-if="sections.hero.action" data-odin-route="pages.contact.name" data-odin-text="sections.hero.action"></a></p>
+    <p data-odin-text="site.notice"></p>
   </div>
   <figure>
     <img class="odin__photo" data-odin-src="sections.hero.image" data-odin-alt="sections.hero.image_alt">

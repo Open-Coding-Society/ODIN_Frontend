@@ -140,3 +140,9 @@ test('the not found page has the backend\'s words and a way home', () => {
   assert.match(button, /\bdata-odin-route="pages\.home\.name"/);
   assert.match(button, /\bdata-odin-text="sections\.message\.action"/);
 });
+
+test('the pages that make the product\'s claims carry the regulatory notice in their body', () => {
+  for (const file of ['pages/home.md', 'pages/how-it-works.md']) {
+    assert.match(read(file), /<p data-odin-text="site\.notice"><\/p>/, `${file} does not show the notice`);
+  }
+});
