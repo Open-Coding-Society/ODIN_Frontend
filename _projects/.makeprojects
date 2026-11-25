@@ -10,18 +10,18 @@
 
 # === NESTED STRUCTURE (organized by category) ===
 # Games
-games/castle-game
-games/gamify
-games/red-riding
+# games/castle-game   (not built: ODIN does not use it)
+# games/gamify   (not built: ODIN does not use it)
+# games/red-riding   (not built: ODIN does not use it)
 
 # Systems
-systems/blogs:dev
-systems/calendar
-systems/messages:dev
-systems/profile:dev
-systems/login:dev
-systems/topics:dev
-systems/scraper
+# systems/blogs:dev   (not built: ODIN does not use it)
+# systems/calendar   (not built: ODIN does not use it)
+# systems/messages:dev   (not built: ODIN does not use it)
+# systems/profile:dev   (not built: ODIN does not use it)
+# systems/login:dev   (not built: ODIN does not use it)
+# systems/topics:dev   (not built: ODIN does not use it)
+# systems/scraper   (not built: ODIN does not use it)
 systems/odin:dev
 
 # === FLAT STRUCTURE (legacy/uncategorized) ===
