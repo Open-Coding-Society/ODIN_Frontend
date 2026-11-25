@@ -17,6 +17,37 @@
     line-height: 1.45;
   }
 
+  // A photo. It fills the width it is given, and its shape is kept before the file arrives.
+  // `wide` is a band across the page, cut to a wide shape around the photo's middle.
+  .odin__photo {
+    width: 100%;
+    aspect-ratio: auto 3 / 2;
+    object-fit: cover;
+
+    &.wide {
+      aspect-ratio: 21 / 9;
+
+      @media (max-width: $breakpoint-mobile) {
+        aspect-ratio: 3 / 2;
+      }
+    }
+  }
+
+  // Running text: a line no longer than reads well, with a gap between paragraphs. It sits in
+  // the second of the page's columns, level with the facts of a list.
+  .odin__prose {
+    max-width: $odin-line-width;
+    padding: $odin-space-block 0 0;
+
+    > * + * {
+      margin-top: $odin-gap;
+    }
+
+    @media (min-width: $breakpoint-mobile + 1px) {
+      margin-left: 25%;
+    }
+  }
+
   // Named facts, one to a row with a thin rule above: the name on the left, the fact beside it.
   // On a narrow screen the fact goes under its name.
   .odin__facts {

@@ -28,6 +28,7 @@ odin:
   # so adding a page to the menu means one line here and a page file, with no HTML to edit.
   routes:
     home: "/"
+    about: "/about/"
     contact: "/contact/"
 
 # Build settings
@@ -119,4 +120,3 @@ minima:
     - { platform: youtube, user_url: "https://www.youtube.com/@OpenCodingSociety" } 
   nav_pages:
     - navigation/projects/topics/topics.md
-    - navigation/about.md
