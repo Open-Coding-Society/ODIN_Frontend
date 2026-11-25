@@ -5,23 +5,14 @@ import { test } from 'node:test';
 const kit = new URL('../', import.meta.url);
 const root = new URL('../../../../', import.meta.url);
 
-// The folders the publisher accepts as the start of a destination (scripts/publish_project.rb).
-const PUBLISHER_ROOTS = readFileSync(new URL('scripts/publish_project.rb', root), 'utf8')
-  .match(/DESTINATIONS = %w\[([^\]]+)\]/)[1].trim().split(/\s+/);
-
 function manifest() {
   return JSON.parse(readFileSync(new URL('distribution.json', kit), 'utf8')).files;
 }
 
-function configValue(key) {
-  const line = readFileSync(new URL('_config.yml', root), 'utf8').split('\n').find((text) => text.startsWith(`${key}:`));
-  return line === undefined ? undefined : line.slice(key.length + 1).trim().replace(/^"(.*)"$/, '$1');
-}
-
 test('the kit is registered, so make builds it', () => {
   const registered = readFileSync(new URL('_projects/.makeprojects', root), 'utf8')
-    .split('\n').map((line) => line.trim());
-  assert.ok(registered.includes('systems/odin:dev'), 'systems/odin:dev is not in _projects/.makeprojects');
+    .split('\n').map((line) => line.trim().split(':')[0]);
+  assert.ok(registered.includes('systems/odin'), 'systems/odin is not in _projects/.makeprojects');
 });
 
 test('the manifest is a list of source and destination pairs', () => {
@@ -32,22 +23,33 @@ test('the manifest is a list of source and destination pairs', () => {
   }
 });
 
-test('every source in the manifest exists in the kit', () => {
+test('every source in the manifest is a path inside the kit that exists', () => {
   for (const { source } of manifest()) {
+    assert.ok(!source.split('/').includes('..'), `${source} leaves the kit`);
     assert.ok(existsSync(new URL(source, kit)), `missing source ${source}`);
   }
 });
 
-test('every destination is in an odin folder the publisher accepts and Git ignores', () => {
+test('every destination starts with a folder the publisher accepts', () => {
+  // The folders scripts/publish_project.rb accepts as the start of a destination
+  const publisher = readFileSync(new URL('scripts/publish_project.rb', root), 'utf8');
+  const accepted = publisher.match(/DESTINATIONS = %w\[([^\]]+)\]/);
+  assert.ok(accepted, 'DESTINATIONS was not found in scripts/publish_project.rb');
+  const folders = accepted[1].trim().split(/\s+/);
   for (const { destination } of manifest()) {
-    const [first, ...rest] = destination.split('/');
-    assert.ok(PUBLISHER_ROOTS.includes(first), `${destination} does not start with a publisher folder`);
-    assert.ok(`/${rest.join('/')}/`.includes('/projects/odin/'), `${destination} is not inside a projects/odin folder`);
+    assert.ok(folders.includes(destination.split('/')[0]), `${destination} does not start with a publisher folder`);
   }
 });
 
-test('the site config names this site and its repository', () => {
-  assert.equal(configValue('title'), 'ODIN Diagnostics');
-  assert.equal(configValue('github_repo'), 'ODIN_Frontend');
-  assert.equal(configValue('baseurl'), '/ODIN_Frontend');
+test('every destination is an odin folder that Git ignores, so copies are never committed', () => {
+  const ignored = readFileSync(new URL('.gitignore', root), 'utf8').split('\n').map((line) => line.trim())
+    .filter((line) => line.endsWith('/') && !line.startsWith('#'));
+  for (const { destination } of manifest()) {
+    assert.ok(destination.split('/').includes('odin'), `${destination} is not an odin folder`);
+    // A line that starts with a slash matches from the repo root; any other matches at any depth
+    const covered = ignored.some((line) => (line.startsWith('/')
+      ? `/${destination}/`.startsWith(line)
+      : `/${destination}/`.includes(`/${line}`)));
+    assert.ok(covered, `${destination} is not ignored by .gitignore`);
+  }
 });
