@@ -21,6 +21,14 @@ github_repo: "ODIN_Frontend"
 baseurl: "/ODIN_Frontend" 
 future: true
 
+# The ODIN site's own settings, read by _projects/systems/odin.
+odin:
+  # Each page's address, by the name the backend gives the page. The backend sends every word a
+  # visitor reads, the menu's included. This list only says where each page lives on this site,
+  # so adding a page to the menu means one line here and a page file, with no HTML to edit.
+  routes:
+    home: "/"
+
 # Build settings
 # --------------
 #

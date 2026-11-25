@@ -90,3 +90,35 @@ test('every page starts with front matter that names the ODIN layout and its own
   }
   assert.equal(new Set(addresses).size, addresses.length, 'two pages share an address');
 });
+
+test('the layout holds the three states, and only the loading part shows before the script runs', () => {
+  const parts = [...markup(layout).matchAll(/<[a-z]+[^>]*data-odin-state="([a-z]+)"[^>]*>/g)].map((match) => [match[1], / hidden>?/.test(match[0])]);
+  assert.deepEqual(parts, [['loading', false], ['error', true], ['ready', true]]);
+  assert.match(layout, /role="status" data-odin-state="loading"/);
+  assert.match(layout, /role="alert" data-odin-state="error"/);
+  // The page's own content sits in the ready part, so none of it shows until the backend answers
+  assert.match(markup(layout), /data-odin-state="ready" hidden>\s*\{\{ content \}\}\s*<\/div>/);
+  assert.match(layout, /<button class="ocs__btn medium accent fill" type="button" data-odin-retry>/);
+});
+
+test('the page script imports config.js and the odin modules from the site, with the baseurl', () => {
+  const imports = [...layout.matchAll(/from '(\{\{ site\.baseurl \}\}[^']+)'/g)].map((match) => match[1]);
+  assert.deepEqual(imports, [
+    '{{ site.baseurl }}/assets/js/api/config.js',
+    '{{ site.baseurl }}/assets/js/projects/odin/content.js',
+    '{{ site.baseurl }}/assets/js/projects/odin/page.js',
+  ]);
+  // Liquid values reach JavaScript through jsonify
+  for (const value of ['page_name', 'site.odin.routes', 'site.baseurl', 'ui.loading', 'ui.error_title']) {
+    assert.ok(layout.includes(`{{ ${value} | jsonify }}`), `${value} is not passed through jsonify`);
+  }
+});
+
+test('every page has an address in _config.yml, and every address there has a page', () => {
+  const config = readFileSync(new URL('../../../_config.yml', kit), 'utf8');
+  const block = config.match(/^odin:\n(?:(?: {2}.*|)\n)*/m)[0];
+  const routes = [...block.slice(block.indexOf('  routes:')).matchAll(/^ {4}([a-z][a-z0-9_]*): "(\/[^"]*)"$/gm)].map((match) => match[2]);
+  assert.ok(routes.length > 0);
+  const addresses = pages.map((path) => read(path).match(/^permalink: (\/\S*)$/m)[1]);
+  assert.deepEqual([...routes].sort(), [...addresses].sort());
+});

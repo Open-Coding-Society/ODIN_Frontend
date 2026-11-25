@@ -13,6 +13,10 @@
       "destination": "_data/projects/odin"
     },
     {
+      "source": "js",
+      "destination": "assets/js/projects/odin"
+    },
+    {
       "source": "sass",
       "destination": "_sass/projects/odin"
     }

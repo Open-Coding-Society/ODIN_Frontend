@@ -2,3 +2,7 @@
 # what the page is doing. Everything a visitor reads about ODIN comes from the backend.
 skip: "Skip to content"
 loading: "Loading"
+error_title: "This page can't load right now"
+error_text: "The site could not reach its content. Check your connection, then try again."
+retry: "Try again"
+noscript: "This site needs JavaScript to load its content."
