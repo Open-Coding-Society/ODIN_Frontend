@@ -1,0 +1,14 @@
+// Styles for the ODIN Diagnostics website (_projects/systems/odin).
+//
+// The build copies this folder to _sass/projects/odin/, and _sass/open-coding/_main.scss pulls
+// every project in through _sass/projects/_all.scss. So these rules are part of the site-wide
+// stylesheet, compiled before the theme and the shared elements. That is why every selector here
+// is under `.odin`: the scope keeps the rules off other pages and lets them win over a shared
+// rule of the same weight.
+
+// The generated entry point (assets/css/projects/odin/main.scss) compiles this file on its own,
+// so the shared scale is imported here. It declares variables and mixins only and emits no CSS.
+@import "open-coding/mixins/variables";
+
+@import "tokens";
+@import "base";

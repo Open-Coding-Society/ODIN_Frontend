@@ -1,0 +1,27 @@
+{%- comment -%}
+  The whole document of every ODIN page. ODIN is its own site, so this layout does not sit inside
+  the shared OCS layout and has no OCS top bar. It loads the one OCS stylesheet, which holds the
+  OCS SASS grammar and this kit's styles, and the theme script, so a visitor's chosen theme applies
+  here as it does on every OCS page. The words below are the interface's own
+  (_data/projects/odin/ui.yml). Everything a visitor reads about ODIN comes from the backend.
+{%- endcomment -%}
+{%- assign ui = site.data.projects.odin.ui -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ ui.loading | escape }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <script src="{{ '/assets/js/user-preferences.js' | relative_url }}"></script>
+</head>
+<body class="odin">
+  <a class="odin__skip" href="#odin-main">{{ ui.skip | escape }}</a>
+  <main class="odin__main" id="odin-main">
+    {{ content }}
+  </main>
+</body>
+</html>

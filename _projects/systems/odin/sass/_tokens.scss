@@ -1,0 +1,69 @@
+// ODIN's tokens. This is the only file in the kit that names a colour or a typeface.
+//
+// The three colours come from ODIN's own material: the white of the headset, the black of the
+// logo and the green of the lit lens. They are defaults, not fixed values. A visitor who picks a
+// theme gets that theme everywhere: the block that sets them steps aside when a theme is active,
+// and every other rule in the kit reads the scoped aliases below, never a colour.
+
+$odin-paper: #ffffff;
+$odin-ink: #101319;
+$odin-signal: #15803d;
+
+$odin-font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+$odin-font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+// The widest a line of the page runs, and the space kept at its sides.
+$odin-measure: 72rem;
+$odin-gutter: clamp(1.25rem, 4vw, 3rem);
+
+// The page's vertical steps, from the gap inside a block to the gap between sections.
+$odin-step-1: 0.5rem;
+$odin-step-2: 1rem;
+$odin-step-3: 1.5rem;
+$odin-step-4: 2.5rem;
+$odin-step-5: clamp(3.5rem, 8vw, 6rem);
+
+// ODIN's defaults, for a visitor who has not picked a theme. They are written into the site's own
+// theme variables, so the shared OCS elements (buttons, inputs, callouts) take them too.
+html:not(.user-theme-active) .odin {
+  --pref-bg-color: #{$odin-paper};
+  --pref-text-color: #{$odin-ink};
+  --pref-accent-color: #{$odin-signal};
+  --pref-font-family: #{$odin-font-body};
+  --panel: color-mix(in srgb, var(--pref-text-color) 4%, var(--pref-bg-color));
+  --panel-mid: color-mix(in srgb, var(--pref-text-color) 8%, var(--pref-bg-color));
+  --ui-bg: color-mix(in srgb, var(--pref-text-color) 6%, var(--pref-bg-color));
+  --ui-border: color-mix(in srgb, var(--pref-text-color) 16%, var(--pref-bg-color));
+  --field-border: color-mix(in srgb, var(--pref-text-color) 45%, var(--pref-bg-color));
+  --text-muted: color-mix(in srgb, var(--pref-text-color) 68%, var(--pref-bg-color));
+  --odin-font-display: #{$odin-font-display};
+}
+
+// The names every other rule in the kit uses. Each one is the theme's text or accent, or one of
+// them mixed into the theme's background, so the page reads in any theme.
+.odin {
+  --odin-paper: var(--pref-bg-color);
+  --odin-ink: var(--pref-text-color);
+  --odin-signal: var(--pref-accent-color);
+  --odin-quiet: color-mix(in srgb, var(--odin-ink) 68%, var(--odin-paper));
+  --odin-rule: color-mix(in srgb, var(--odin-ink) 16%, var(--odin-paper));
+  --odin-tint: color-mix(in srgb, var(--odin-ink) 4%, var(--odin-paper));
+  --odin-font-body: var(--pref-font-family);
+  // A visitor's theme picks one typeface for the whole page, headings included.
+  --odin-font-display: var(--pref-font-family);
+}
+
+// One ring, on everything that takes keyboard focus.
+@mixin odin-focus-ring($offset: 3px) {
+  &:focus-visible {
+    outline: 2px solid var(--odin-signal);
+    outline-offset: $offset;
+  }
+}
+
+// Narrower than a tablet in portrait.
+@mixin odin-below-mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}

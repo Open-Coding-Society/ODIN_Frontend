@@ -1,0 +1,4 @@
+# The words of the site's own interface. They are not ODIN's content: they label controls and say
+# what the page is doing. Everything a visitor reads about ODIN comes from the backend.
+skip: "Skip to content"
+loading: "Loading"
