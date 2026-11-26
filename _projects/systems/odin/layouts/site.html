@@ -71,8 +71,8 @@
         <li data-odin-if="site.linkedin"><a data-odin-href="site.linkedin">{{ ui.linkedin | escape }}</a></li>
       </ul>
     </nav>
-    {%- comment -%} Not guarded: a site that cannot show the notice shows the error instead of its pages. {%- endcomment -%}
-    <div class="odin__notice">
+    {%- comment -%} Not guarded: a site that cannot show the notice shows the error instead of its pages. The pages that make the product's claims link here from one short line, so the full notice shows once on each page. {%- endcomment -%}
+    <div class="odin__notice" id="odin-notice">
       <h2 data-odin-if="site.notice_title" data-odin-text="site.notice_title"></h2>
       <p data-odin-text="site.notice"></p>
     </div>

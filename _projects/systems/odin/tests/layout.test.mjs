@@ -224,6 +224,8 @@ test('every image in the layout and the pages gets its description from the back
 test('the footer carries the regulatory notice on every page, and a site without one shows the error', () => {
   const footer = markup(layout).match(/<footer\b[\s\S]*?<\/footer>/)[0];
   const notice = footer.match(/<div class="odin__notice"[^>]*>[\s\S]*?<\/div>/)[0];
+  // The pages' short line links to it by this id
+  assert.match(notice, /^<div class="odin__notice" id="odin-notice">/);
   assert.match(notice, /<p data-odin-text="site\.notice"><\/p>/);
   assert.match(notice, /<h2 data-odin-if="site\.notice_title" data-odin-text="site\.notice_title"><\/h2>/);
   // No guard on the notice itself: content without it is content the pages must not be shown with

@@ -11,7 +11,7 @@ const read = (path) => readFileSync(new URL(path, kit), 'utf8');
 // sections with the parts each one has (ODIN_Backend, model/dataconfigs). A page that asks for
 // a part not listed here would show the error state, so a misspelled path fails this test first.
 const SITE = ['name', 'tagline', 'phone', 'email', 'address', 'copyright', 'instagram', 'linkedin', 'logo_dark', 'logo_light',
-  'icon', 'notice_title', 'notice'];
+  'icon', 'notice_title', 'notice', 'notice_short'];
 const PAGES = {
   home: { hero: ['kicker', 'title', 'text', 'action', 'image', 'image_alt'], statistics: ['title', 'text', 'items'], pitch: ['title', 'text'] },
   how_it_works: { how_it_works: ['text', 'image', 'image_alt'], features: ['image', 'image_alt', 'items'] },
@@ -141,13 +141,16 @@ test('the not found page has the backend\'s words and a way home', () => {
   assert.match(button, /\bdata-odin-text="sections\.message\.action"/);
 });
 
-test('the pages that make the product\'s claims carry the regulatory notice right under the claim', () => {
+test('the pages that make the product\'s claims point to the regulatory notice right under the claim', () => {
+  const pointer = '<p><a href="#odin-notice" data-odin-text="site\\.notice_short"><\\/a><\\/p>';
   const home = read('pages/home.md');
-  assert.match(home, /data-odin-text="sections\.hero\.text"><\/p>\s*<p data-odin-text="site\.notice"><\/p>/);
+  assert.match(home, new RegExp(`data-odin-text="sections\\.hero\\.text"><\\/p>\\s*${pointer}`));
   const how = read('pages/how-it-works.md');
-  assert.match(how, /data-odin-text="sections\.how_it_works\.text"><\/p>\s*<p data-odin-text="site\.notice"><\/p>/);
-  // The notice is never optional on a page
+  assert.match(how, new RegExp(`data-odin-text="sections\\.how_it_works\\.text"><\\/p>\\s*${pointer}`));
   for (const file of ['pages/home.md', 'pages/how-it-works.md']) {
-    assert.ok(!/data-odin-if="site\.notice"/.test(read(file)), `${file} guards the notice`);
+    // The full notice is in the footer, so a page does not show it a second time
+    assert.ok(!/data-odin-text="site\.notice"/.test(read(file)), `${file} shows the full notice as well as the footer`);
+    // The line that points to it is never optional on a page
+    assert.ok(!/data-odin-if="site\.notice/.test(read(file)), `${file} guards the notice`);
   }
 });
