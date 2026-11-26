@@ -15,14 +15,11 @@
     }
   }
 
-  .odin__opening-words {
-    @include odin-flow;
-
-    // The name is the largest thing on the site. A longer one breaks where it must.
-    h1 {
-      font-size: $odin-text-name;
-      overflow-wrap: anywhere;
-    }
+  // The name is the largest thing on the site. A longer one breaks where it must. The words
+  // beside the photo are stacked with the shared ocs__stack.
+  .odin__opening h1 {
+    font-size: $odin-text-name;
+    overflow-wrap: anywhere;
   }
 
   // The short line above the name. Plain small type, not a badge.

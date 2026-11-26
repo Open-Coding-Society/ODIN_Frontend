@@ -6,7 +6,7 @@ permalink: /
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
 <div class="odin__opening">
-  <div class="odin__opening-words">
+  <div class="ocs__stack">
     <p class="odin__overline" data-odin-if="sections.hero.kicker" data-odin-text="sections.hero.kicker"></p>
     <h1 data-odin-text="sections.hero.title"></h1>
     <p class="ocs__lead" data-odin-text="sections.hero.text"></p>
@@ -31,7 +31,7 @@ permalink: /
 </section>
 <section class="odin__section" aria-labelledby="odin-closing">
   <h2 id="odin-closing" data-odin-text="sections.pitch.title"></h2>
-  <div class="odin__prose" data-odin-paragraphs="sections.pitch.text"></div>
+  <div class="ocs__stack odin__prose" data-odin-paragraphs="sections.pitch.text"></div>
   <p class="odin__onward" data-odin-if="pages.how_it_works.menu"><a data-odin-route="pages.how_it_works.name" data-odin-text="pages.how_it_works.menu"></a></p>
 </section>
 <!-- markdownlint-restore -->
