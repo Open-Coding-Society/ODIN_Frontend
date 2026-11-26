@@ -78,13 +78,10 @@ html.odin:not(.user-theme-active) {
 $odin-shape-photo: 3 / 2;
 $odin-shape-band: 21 / 9;
 
-// Where the second of two columns starts, as a left margin for something that sits under it:
-// in a list of named facts (a quarter and three quarters), and in the home page's opening and
-// its figures (five parts and six).
+// The two columns of a list of named facts (a quarter and three quarters), and of the home
+// page's opening and its figures (five parts and six).
 $odin-facts-columns: minmax(8rem, 1fr) minmax(0, 3fr);
-$odin-facts-indent: calc(25% + #{$odin-space-block * 0.75});
 $odin-opening-columns: minmax(0, 5fr) minmax(0, 6fr);
-$odin-opening-indent: calc((100% - #{$odin-space-block}) * 5 / 11 + #{$odin-space-block});
 
 // The thin line between parts of a page.
 $odin-rule-line: 1px solid var(--odin-rule);
@@ -107,13 +104,6 @@ $odin-rule-line: 1px solid var(--odin-rule);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0;
-}
-
-// Rules for a screen wider than a tablet held upright.
-@mixin odin-wide {
-  @media (min-width: $breakpoint-mobile + 1px) {
-    @content;
-  }
 }
 
 // Rules for a screen no wider than a tablet held upright, where side by side becomes one under

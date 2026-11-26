@@ -33,17 +33,12 @@
   }
 
   // Running text: a line no longer than reads well, with a gap between paragraphs and a
-  // section's space above. On a wide screen it starts where the facts of a list start: a
-  // quarter of the way across, past the gap between a list's two columns.
+  // section's space above. It starts at the page's left edge, so no empty column sits beside it.
   .odin__prose {
     @include odin-flow;
 
     max-width: $odin-line-width;
     padding: $odin-space-section 0 0;
-
-    @include odin-wide {
-      margin-left: $odin-facts-indent;
-    }
   }
 
   // A part of a page with its own heading, set off by a rule with a section's space under it.
