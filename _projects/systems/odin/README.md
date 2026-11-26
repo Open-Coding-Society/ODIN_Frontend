@@ -17,14 +17,14 @@ from. This file lists what the kit holds as each part is added.
 | Path | What it is |
 |---|---|
 | `distribution.json` | Where each source is published. Every destination is an `odin` folder that `.gitignore` covers. |
-| `layouts/site.html` | The whole document of every ODIN page: its own head, header, menu and footer, with no OCS top bar. It loads the OCS stylesheet and the theme script. The menu is built from the pages the backend lists that have an address in `_config.yml`. The footer carries the notice of the device's regulatory status on every page, and the head takes the tab's icon from the backend. |
+| `layouts/site.html` | The whole document of every ODIN page: its own head, header, menu and footer, with no OCS top bar. It loads the OCS stylesheet and the theme script, and no font. The menu is built from the pages the backend lists that have an address in `_config.yml`. The footer carries the notice of the device's regulatory status on every page, and the head takes the tab's icon from the backend. |
 | `pages/` | One file per page. Each names the ODIN layout and its own address. |
 | `data/ui.yml` | The words of the site's own interface: the skip link, the loading line, the error message, the labels of the two menus and the names of the two social networks. Not ODIN's content. |
 | `js/content.js` | Asks the backend for the site basics, the page list, one page and an image's address. |
 | `js/bind.js` | Writes content into markup, by the marks listed below. |
 | `js/page.js` | Shows one page: loads its content, writes it, names the tab and switches the page's state. |
 | `js/tone.js` | Writes `data-odin-tone` (`light` or `dark`) on the html element from the page's real background. The styles use it to turn the black logo white on a dark theme. The backend's `logo_light` is not used: its mark is black, so it is lost on a dark ground. |
-| `sass/` | The kit's styles. `main.scss` imports the partials; `_tokens.scss` is the only file that names a colour or a typeface. |
+| `sass/` | The kit's styles. `main.scss` imports the partials; `_tokens.scss` holds the sizes, the spaces and the colour aliases. |
 | `tests/` | Node tests. Run `node --test _projects/systems/odin/tests/*.test.mjs` from the repo root. |
 
 Edit the sources here. Never edit a published copy.
@@ -98,10 +98,10 @@ part of a page with its own heading), `odin__onward` (the link on to the next pa
   written the same way: block, `-part`, `--variant`, then plain modifier words.
 - Every rule is under `.odin`, the class on the page's `body`. The kit's SCSS is part of the
   site-wide stylesheet, so the scope keeps it off other pages.
-- Colours: `_tokens.scss` sets ODIN's defaults (the white of the headset, the black of the logo,
-  the green of the lit lens) into the site's theme variables, for a visitor who has not picked a
-  theme. A picked theme replaces all of them. Other files use the `--odin-*` aliases and never
-  name a colour.
+- Colours and type: no new colours and no new fonts. Every colour and the typeface come from the
+  OCS theme (`--pref-*`), its default or the one a visitor picks. `_tokens.scss` maps them to the
+  `--odin-*` aliases the other files use, and no file names a colour or a typeface.
+  `tests/sass.test.mjs` checks contrast in every OCS theme.
 - No inline styles, no style blocks, no CSS files.
 
 ## What the site publishes

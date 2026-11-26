@@ -1,18 +1,8 @@
-// ODIN's tokens. This is the only file in the kit that names a colour or a typeface.
+// ODIN's tokens: the sizes, the spaces and the names the kit reads its colours by.
 //
-// The three colours come from ODIN's own material: the white of the headset, the black of the
-// logo and the green of the lit lens. They are defaults, not fixed values. A visitor who picks a
-// theme gets that theme everywhere: the block that sets them steps aside when a theme is active,
-// and every other rule in the kit reads the scoped aliases below, never a colour.
-
-$odin-paper: #ffffff;
-$odin-ink: #101319;
-// The lit lens in ODIN's hero photo has a hue of 145 degrees. This is that hue, darkened until
-// it keeps 4.5 to 1 on the page and on a tinted panel (tests/sass.test.mjs checks both).
-$odin-signal: #177840;
-
-$odin-font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-$odin-font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+// The kit names no colour and no typeface. Every colour and the typeface come from the OCS theme
+// (the --pref-* variables), its default or the one a visitor picks, so the site reads in any
+// theme. Every other rule in the kit reads the scoped aliases below, never a colour.
 
 // The sizes of type, largest first. The first is for ODIN's name at the top of the home page.
 // Every page uses these and no other.
@@ -40,36 +30,19 @@ $odin-gap: $spacing-md;
 $odin-space-block: $spacing-xl;
 $odin-space-section: clamp(3.5rem, 8vw, 6rem);
 
-// ODIN's defaults, for a visitor who has not picked a theme. They are written into the site's own
-// theme variables, so the shared OCS elements (buttons, inputs, callouts) take them too. The
-// shades the elements read are mixed from the same three colours.
-html.odin:not(.user-theme-active) {
-  --pref-bg-color: #{$odin-paper};
-  --pref-text-color: #{$odin-ink};
-  --pref-accent-color: #{$odin-signal};
-  --pref-success-color: #{$odin-signal};
-  --pref-font-family: #{$odin-font-body};
-  --pref-font-size: 16px;
-  --panel: color-mix(in srgb, var(--pref-text-color) 4%, var(--pref-bg-color));
-  --panel-mid: color-mix(in srgb, var(--pref-text-color) 8%, var(--pref-bg-color));
-  --ui-bg: color-mix(in srgb, var(--pref-text-color) 6%, var(--pref-bg-color));
-  --ui-border: color-mix(in srgb, var(--pref-text-color) 16%, var(--pref-bg-color));
-  --field-border: color-mix(in srgb, var(--pref-text-color) 45%, var(--pref-bg-color));
-  --text-muted: color-mix(in srgb, var(--pref-text-color) 68%, var(--pref-bg-color));
-  --odin-font-display: #{$odin-font-display};
-}
-
 // The names every other rule in the kit uses. Each one is the theme's text or accent, or the text
-// mixed into the theme's background, so the page reads in any theme.
+// mixed into the theme's background, so the page reads in any theme. The quiet shade keeps 80% of
+// the text: less fails 4.5 to 1 in the Light and Sepia themes (tests/sass.test.mjs checks every
+// theme).
 .odin {
   --odin-paper: var(--pref-bg-color);
   --odin-ink: var(--pref-text-color);
   --odin-signal: var(--pref-accent-color);
-  --odin-quiet: color-mix(in srgb, var(--odin-ink) 68%, var(--odin-paper));
+  --odin-quiet: color-mix(in srgb, var(--odin-ink) 80%, var(--odin-paper));
   --odin-rule: color-mix(in srgb, var(--odin-ink) 16%, var(--odin-paper));
   --odin-tint: color-mix(in srgb, var(--odin-ink) 4%, var(--odin-paper));
+  // The theme's one typeface is used for the whole page, headings included.
   --odin-font-body: var(--pref-font-family);
-  // A visitor's theme picks one typeface for the whole page, headings included.
   --odin-font-display: var(--pref-font-family);
 }
 
@@ -100,10 +73,9 @@ $odin-rule-line: 1px solid var(--odin-rule);
   padding-right: $odin-gutter;
 }
 
-// The display face as headings wear it: wide and heavy, with tight lines.
+// Headings: the theme's typeface, heavy, with tight lines.
 @mixin odin-display-type {
   font-family: var(--odin-font-display);
-  font-stretch: 125%;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0;

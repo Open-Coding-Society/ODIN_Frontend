@@ -74,18 +74,13 @@ test('the kit uses @import, which the Jekyll build understands, never @use', () 
   for (const name of files) assert.ok(!/@use\b|@forward\b/.test(code(read(name))), `${name} has @use or @forward`);
 });
 
-test('only the tokens file names a colour, and only its default block uses one', () => {
+test('no file names a colour: every colour comes from the OCS theme', () => {
   for (const name of files) {
     const text = code(read(name));
-    if (name === TOKENS) {
-      // The colour tokens reach the page through the default block's interpolations and nowhere else
-      const uses = [...read(name).matchAll(/^(.*)\$odin-(paper|ink|signal)\b(?!:)/gm)].map((match) => match[1].trim());
-      assert.ok(uses.length > 0);
-      for (const before of uses) assert.match(before, /^--pref-[a-z-]+: #\{$/, `a colour token is used outside the default block: ${before}`);
-      continue;
-    }
-    assert.ok(!/\$odin-(paper|ink|signal)\b/.test(text), `${name} uses a colour token, which ignores a visitor's theme`);
+    assert.ok(!/\$odin-(paper|ink|signal)\b/.test(text), `${name} has a colour token of its own, which ignores the theme`);
     assert.ok(!/#[0-9a-fA-F]{3,8}\b/.test(text), `${name} has a hex colour`);
+    // The theme's own variables are set by the theme, never by the kit
+    assert.ok(!/(^|[{;\s])--pref-[a-z-]+\s*:/.test(text), `${name} sets a theme variable`);
     for (const [property, value] of declarations(text)) {
       assert.ok(!COLOUR_FUNCTIONS.test(value), `${name}: ${property} makes a colour with a function`);
       for (const word of value.toLowerCase().split(/[^a-z-]+/)) {
@@ -144,30 +139,61 @@ function mix(first, percent, second) {
   return `#${blend(0)}${blend(1)}${blend(2)}`;
 }
 
-test("ODIN's default colours keep 4.5 to 1 for text, for the accent and for text on an accent fill", () => {
+test('no file names a typeface: the page uses the OCS theme\'s', () => {
+  for (const name of files) {
+    for (const [property, value] of declarations(code(read(name)))) {
+      if (!/^(font-family|--odin-font-[a-z]+)$/.test(property)) continue;
+      assert.match(value.trim(), /^var\(--[a-z-]+\)$/, `${name}: ${property} names a typeface`);
+    }
+  }
+});
+
+// The OCS themes, as [name, { bg, text, accent }]: the stylesheet's own default (a page before the
+// theme script runs), the script's site default and every preset a visitor can pick.
+function themes() {
+  const repo = new URL('../../../../', import.meta.url);
+  const script = readFileSync(new URL('assets/js/user-preferences.js', repo), 'utf8');
+  const sheet = readFileSync(new URL('_sass/open-coding/theme/user-preferences.scss', repo), 'utf8');
+  const found = [];
+  const root = (key) => sheet.match(new RegExp(`--pref-${key}: (#[0-9a-fA-F]{6});`))[1];
+  found.push(['the stylesheet default', { bg: root('bg-color'), text: root('text-color'), accent: root('accent-color') }]);
+  const colour = (body, key) => body.match(new RegExp(`\\b${key}: '(#[0-9a-fA-F]{6})'`))[1];
+  const site = script.match(/const SITE_DEFAULT = \{([\s\S]*?)\};/)[1];
+  found.push(['Site Default', { bg: colour(site, 'bg'), text: colour(site, 'text'), accent: colour(site, 'accent') }]);
+  const presets = script.match(/const PRESETS = \{([\s\S]*?)\n {2}\};/)[1];
+  for (const [, name, body] of presets.matchAll(/^ {4}([A-Z][\w ]*): \{([\s\S]*?)\},/gm)) {
+    found.push([name, { bg: colour(body, 'bg'), text: colour(body, 'text'), accent: colour(body, 'accent') }]);
+  }
+  return found;
+}
+
+test('the theme list is read from the OCS theme files', () => {
+  const names = themes().map(([name]) => name);
+  assert.ok(names.includes('Site Default') && names.includes('Light') && names.includes('Sepia'), names.join(', '));
+  assert.ok(names.length >= 9, names.join(', '));
+});
+
+test('in every OCS theme, text, quiet text and the accent keep 4.5 to 1, and so does text on an accent fill', () => {
   const tokens = read(TOKENS);
-  const token = (name) => {
-    const found = tokens.match(new RegExp(`^\\$odin-${name}: (#[0-9a-fA-F]{6});`, 'm'));
-    assert.ok(found, `the tokens file has no $odin-${name}`);
-    return found[1];
-  };
-  const mixed = (alias) => {
+  const share = (alias) => {
     const found = tokens.match(new RegExp(`--odin-${alias}: color-mix\\(in srgb, var\\(--odin-ink\\) (\\d+)%, var\\(--odin-paper\\)\\);`));
     assert.ok(found, `the tokens file has no --odin-${alias} mix`);
-    return mix(token('ink'), Number(found[1]), token('paper'));
+    return Number(found[1]);
   };
-  const [paper, ink, signal] = [token('paper'), token('ink'), token('signal')];
-  const [tint, quiet] = [mixed('tint'), mixed('quiet')];
-  const pairs = {
-    'text on the page': [ink, paper],
-    'text on a tinted panel': [ink, tint],
-    'quiet text on the page': [quiet, paper],
-    'quiet text on a tinted panel': [quiet, tint],
-    'the accent on the page': [signal, paper],
-    'the accent on a tinted panel': [signal, tint],
-    'page-coloured text on an accent fill': [paper, signal],
-  };
-  for (const [label, [front, back]] of Object.entries(pairs)) {
-    assert.ok(contrast(front, back) >= 4.5, `${label} is ${contrast(front, back).toFixed(2)} to 1`);
+  const [tintShare, quietShare] = [share('tint'), share('quiet')];
+  for (const [theme, { bg, text, accent }] of themes()) {
+    const [tint, quiet] = [mix(text, tintShare, bg), mix(text, quietShare, bg)];
+    const pairs = {
+      'text on the page': [text, bg],
+      'text on a tinted panel': [text, tint],
+      'quiet text on the page': [quiet, bg],
+      'quiet text on a tinted panel': [quiet, tint],
+      'the accent on the page': [accent, bg],
+      'the accent on a tinted panel': [accent, tint],
+      'page-coloured text on an accent fill': [bg, accent],
+    };
+    for (const [label, [front, back]] of Object.entries(pairs)) {
+      assert.ok(contrast(front, back) >= 4.5, `${theme}: ${label} is ${contrast(front, back).toFixed(2)} to 1`);
+    }
   }
 });

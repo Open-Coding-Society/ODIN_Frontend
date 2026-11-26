@@ -36,16 +36,9 @@ test('the layout loads the OCS stylesheet and the theme script from the site, wi
   assert.match(layout, /<script src="\{\{ '\/assets\/js\/user-preferences\.js' \| relative_url \}\}"><\/script>/);
 });
 
-test('the layout asks for the typefaces the theme presets name, so a picked theme shows in its own face', () => {
-  const presets = readFileSync(new URL('../../../assets/js/user-preferences.js', kit), 'utf8');
-  const fonts = layout.match(/fonts\.googleapis\.com\/css2\?([^"]+)"/)[1].replaceAll('+', ' ');
-  // The first family each preset names, when it is a web font and not one a computer already has
-  const local = ['Georgia', 'system-ui', 'Arial'];
-  const named = [...presets.matchAll(/font: "'?([A-Za-z][A-Za-z ]*?)'?,/g)].map((match) => match[1]);
-  assert.ok(named.length > 0);
-  for (const family of new Set(named.filter((name) => !local.includes(name)))) {
-    assert.ok(fonts.includes(`family=${family}:`), `the layout does not load ${family}`);
-  }
+test('the layout loads no font of its own, so the page uses the OCS theme\'s typeface', () => {
+  assert.ok(!/fonts\.(googleapis|gstatic)\.com/.test(markup(layout)), 'the layout loads a web font');
+  assert.ok(!/@font-face/.test(layout), 'the layout declares a font');
 });
 
 test('the skip link leads to the main part of the page', () => {
