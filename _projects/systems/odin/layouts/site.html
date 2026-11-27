@@ -21,10 +21,7 @@
   <meta name="description" data-odin-if="page.description" data-odin-content="page.description">
   {%- comment -%} An empty icon until the backend names ODIN's, so the browser does not go looking for one at the host's root. {%- endcomment -%}
   <link rel="icon" href="data:," data-odin-if="site.icon" data-odin-image-href="site.icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  {%- comment -%} ODIN's two typefaces, then the ones the OCS theme presets name, so a picked theme shows in its own face. {%- endcomment -%}
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Inter:wght@400;600&amp;family=Open+Sans:wght@400;600&amp;family=Source+Code+Pro:wght@400;600&amp;display=swap">
+  {%- comment -%} No font is loaded here: the page uses the OCS theme's typeface. {%- endcomment -%}
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <script src="{{ '/assets/js/user-preferences.js' | relative_url }}"></script>
 </head>
