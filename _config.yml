@@ -57,25 +57,12 @@ exclude:
   - README4YML.md
   - LICENSE
   - _projects
-  # The template's pages
-  - navigation/blog.md
-  - navigation/signup.md
-  - navigation/users.md
-  - navigation/authentication
-  - navigation/toolkit
-  - _posts
-  - _notebooks
-  - hacks
-  - linuxcyberA
-  - git
-  - exam-predictor.html
-  - exercisegraphs.html
-  - grade-predictor.html
-  - newsignup.html
-  - scorepredictor.html
-  - study-tracker.html
-  - testing.html
-  - login.css
+  # The template's pages build again. These three would take an address an ODIN page has
+  # (/, /about/ and /404.html), so they stay in the repo but out of the build until Aryan decides
+  # where they go.
+  - index.md
+  - navigation/about.md
+  - 404.html
   # The template's own scripts and styles. ODIN's pages load assets/js/api/config.js,
   # assets/js/user-preferences.js, the kit's scripts and the one stylesheet, and nothing else here.
   - assets/js/FooterOverride.js

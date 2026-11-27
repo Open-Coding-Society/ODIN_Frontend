@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
 const root = new URL('../../../../', import.meta.url);
@@ -37,14 +37,25 @@ test('the exclude list keeps the defaults Jekyll would use without one', () => {
   }
 });
 
-test('no page or folder at the top of the repo is published but the built site itself', () => {
-  // Folders that start with an underscore or a dot are never published. assets holds the
-  // stylesheet and scripts, and navigation holds ODIN's pages.
-  // vendor is where a bundler cache goes: Jekyll's own defaults name the folders inside it.
-  const kept = ['assets', 'navigation', 'vendor'];
-  for (const name of names('.').filter((entry) => !/^[._]/.test(entry) && !kept.includes(entry))) {
-    assert.ok(excluded().includes(name), `${name} at the top of the repo would be published`);
-  }
+// The template's pages the redesign had deleted or left out of the build. Aryan asked for them
+// back (To_Ryden_05, fix 9).
+const TEMPLATE_PAGES = ['navigation/blog.md', 'navigation/signup.md', 'navigation/users.md', 'navigation/authentication',
+  'navigation/toolkit', '_posts', '_notebooks', 'hacks', 'exam-predictor.html', 'grade-predictor.html', 'testing.html'];
+// Restored template pages that would take an address an ODIN page has: /, /about/ and /404.html.
+// They stay in the repo, out of the build, until Aryan decides where they go.
+const CLASHING = ['index.md', 'navigation/about.md', '404.html'];
+
+test('the template files the redesign deleted are back in the repo', () => {
+  for (const path of CLASHING) assert.ok(existsSync(new URL(path, root)), `${path} is missing`);
+  assert.ok(names('images/about').length > 0, 'images/about is missing or empty');
+});
+
+test('the template\'s pages build again', () => {
+  for (const path of TEMPLATE_PAGES) assert.ok(!leftOut(path), `${path} is still left out of the build`);
+});
+
+test('a template page that would take an ODIN page\'s address stays out of the build', () => {
+  for (const path of CLASHING) assert.ok(excluded().includes(path), `${path} would take an ODIN page's address`);
 });
 
 test('of the template\'s scripts, only config.js and the theme script are published', () => {
@@ -63,12 +74,6 @@ test('of assets, only the stylesheets and scripts ODIN uses are published', () =
   // The one stylesheet comes from the theme, so nothing in assets/css is published
   for (const name of names('assets/css')) {
     assert.ok(excluded().includes(`assets/css/${name}`), `assets/css/${name} would be published`);
-  }
-});
-
-test('under navigation, only ODIN\'s pages are published', () => {
-  for (const name of names('navigation').filter((entry) => entry !== 'projects')) {
-    assert.ok(excluded().includes(`navigation/${name}`), `navigation/${name} would be published`);
   }
 });
 

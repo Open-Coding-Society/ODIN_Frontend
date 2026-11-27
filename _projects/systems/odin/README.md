@@ -113,17 +113,20 @@ that belongs to what is above it). The home page's own parts are in `sass/_home.
 ## What the site publishes
 
 This repo began as the OCS portfolio template, which holds its own pages, lessons, games and
-media. A visitor to ODIN's site should reach none of them, so:
+media.
 
+- The template's pages are kept and build with the site (Aryan's call, To_Ryden_05 fix 9).
+  Three of them would take an address an ODIN page has: `index.md` (`/`),
+  `navigation/about.md` (`/about/`) and `404.html`. Those stay in the repo but are in the
+  `exclude` list of `_config.yml` until Aryan decides where they go.
 - `_projects/.makeprojects` registers this kit only. The template's other kits are commented
   out there, not deleted.
-- `_config.yml` has an `exclude` list for everything else the template would publish. The files
-  stay in the repo untouched, so an upstream sync still applies.
+- The `exclude` list also leaves out the tooling and the template's own scripts, styles and
+  media that ODIN's pages do not use. The files stay in the repo untouched, so an upstream sync
+  still applies.
 
-The built site is ODIN's five pages, `assets/css/style.css`, `assets/js/api/config.js`,
-`assets/js/user-preferences.js` and this kit's four scripts: twelve files. `tests/site.test.mjs` fails when a file
-or folder appears that would be published and is not in the list, such as one an upstream sync
-adds.
+`tests/site.test.mjs` checks that the template's pages build, that the three above stay out of
+the build, and that nothing ODIN's pages need is left out.
 
 After changing which kits are registered, remove the copies the old ones published:
 `git clean -fdX -- navigation _includes/projects _layouts/projects _data/projects _plugins/projects assets/js/projects assets/css/projects assets/js/login assets/js/api _sass/projects images/projects _posts/projects`,
