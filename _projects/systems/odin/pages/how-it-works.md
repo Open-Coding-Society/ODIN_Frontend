@@ -11,7 +11,7 @@ permalink: /how-it-works/
 <div class="ocs__split">
   <div class="ocs__stack">
     <p class="ocs__lead" data-odin-text="sections.how_it_works.text"></p>
-    <p data-odin-text="site.notice"></p>
+    <p><a href="#odin-notice" data-odin-text="site.notice_short"></a></p>
   </div>
   <figure>
     <img class="odin__photo" data-odin-src="sections.how_it_works.image" data-odin-alt="sections.how_it_works.image_alt">
