@@ -1,10 +1,8 @@
 // The parts a page's own content is built from. The contact page is the first to use them.
 
 .odin {
-  // A page's title and the line under it.
+  // A page's title and the line under it. The markup stacks them with the shared ocs__stack.
   .odin__page-head {
-    @include odin-flow;
-
     max-width: $odin-line-width;
     padding: $odin-space-section 0 $odin-space-block;
   }
@@ -32,18 +30,12 @@
     }
   }
 
-  // Running text: a line no longer than reads well, with a gap between paragraphs and a
-  // section's space above. On a wide screen it starts where the facts of a list start: a
-  // quarter of the way across, past the gap between a list's two columns.
+  // Running text: a line no longer than reads well, with a section's space above. The markup
+  // puts the gap between paragraphs with the shared ocs__stack. It starts at the page's left
+  // edge, so no empty column sits beside it.
   .odin__prose {
-    @include odin-flow;
-
     max-width: $odin-line-width;
     padding: $odin-space-section 0 0;
-
-    @include odin-wide {
-      margin-left: $odin-facts-indent;
-    }
   }
 
   // A part of a page with its own heading, set off by a rule with a section's space under it.
@@ -73,19 +65,16 @@
     font-size: $odin-text-caption;
   }
 
-  // Two things side by side, such as a photo and what is said about it. Each takes half the
-  // page, and on a narrow screen the second goes under the first, no wider than a line of
-  // reading text. A pair after another pair keeps a section's space above it. The shared
-  // ocs__split is not used: it stretches both sides to one height and brings its own margin.
-  .odin__pair {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  // Two things side by side, such as a photo and what is said about it: the shared ocs__split,
+  // which takes half the page each and puts the second under the first on a narrow screen. Here
+  // each side keeps its own height instead of stretching, a narrow screen keeps them no wider
+  // than a line of reading text, and a split after another keeps a section's space above it.
+  .ocs__split {
     align-items: start;
     gap: $odin-space-block;
+    margin-top: 0;
 
     @include odin-narrow {
-      grid-template-columns: minmax(0, 1fr);
-
       > * {
         max-width: $odin-line-width;
       }
@@ -97,7 +86,7 @@
     }
   }
 
-  .odin__pair + .odin__pair {
+  .ocs__split + .ocs__split {
     margin-top: $odin-space-section;
   }
 

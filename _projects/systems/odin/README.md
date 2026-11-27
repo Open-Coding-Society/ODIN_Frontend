@@ -82,15 +82,21 @@ Two choices that differ from other kits, and why:
 | `pages/not-found.md` | `/404.html` | What a visitor sees at an address the site does not have: the backend's words and a button home. |
 | `pages/contact.md` | `/contact/` | The page title, the line under it, phone, email and address as a list of named facts, and the EvoNexus logo with its link. |
 
-The parts pages are built from are in `sass/_content.scss`: `odin__page-head` (a page's title and
-the line under it), `odin__photo` (a photo; `odin__photo--wide` is a band across the page),
-`odin__prose` (running text), `odin__pair` (two things side by side), `odin__facts` with
-`odin__fact` rows (named facts with a thin rule between
-them) and `odin__partner` with `odin__partner-logo` (another organisation's logo and its link).
-Also there: `odin__facts--figures` (numbers as the named facts, set large), `odin__section` (a
-part of a page with its own heading), `odin__onward` (the link on to the next page) and
-`odin__aside` (a line that belongs to what is above it). The home page's own parts are in
-`sass/_home.scss`: `odin__opening` with `odin__opening-words`, and `odin__overline`.
+Pages use the shared OCS pieces where one does the job: `ocs__stack` for things one under
+another (a page's title and the line under it, running text, the home page's opening words, the
+loading and error messages), `ocs__split` for two things side by side, `ocs__lead` and
+`ocs__btn`. `sass/_content.scss` adjusts `ocs__split` for these pages: each side keeps its own
+height, and a split after another keeps a section's space above it.
+
+The kit's own parts, for what OCS has no piece for, are in `sass/_content.scss`:
+`odin__page-head` (the space around a page's title), `odin__photo` (a photo; `odin__photo--wide`
+is a band across the page), `odin__prose` (the width and space of running text), `odin__facts`
+with `odin__fact` rows (named facts with a thin rule between them) and `odin__partner` with
+`odin__partner-logo` (another organisation's logo and its link). Also there:
+`odin__facts--figures` (numbers as the named facts, set large), `odin__section` (a part of a page
+with its own heading), `odin__onward` (the link on to the next page) and `odin__aside` (a line
+that belongs to what is above it). The home page's own parts are in `sass/_home.scss`:
+`odin__opening` and `odin__overline`.
 
 ## Styles
 

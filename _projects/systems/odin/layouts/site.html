@@ -43,10 +43,10 @@
     </nav>
   </header>
   <main class="odin__main" id="odin-main" tabindex="-1" data-odin-main>
-    <div class="odin__status" role="status" data-odin-state="loading" hidden>
+    <div class="ocs__stack odin__status" role="status" data-odin-state="loading" hidden>
       <p class="odin__status-text">{{ ui.loading | escape }}</p>
     </div>
-    <div class="odin__status" role="alert" data-odin-state="error" hidden>
+    <div class="ocs__stack odin__status" role="alert" data-odin-state="error" hidden>
       <h1>{{ ui.error_title | escape }}</h1>
       <p>{{ ui.error_text | escape }}</p>
       <button class="ocs__btn medium accent fill" type="button" data-odin-retry>{{ ui.retry | escape }}</button>

@@ -5,7 +5,7 @@ permalink: /contact/
 
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
-<div class="odin__page-head">
+<div class="ocs__stack odin__page-head">
   <h1 data-odin-text="page.title"></h1>
   <p class="ocs__lead" data-odin-text="sections.intro.text"></p>
 </div>

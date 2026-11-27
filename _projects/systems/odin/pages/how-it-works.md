@@ -5,10 +5,10 @@ permalink: /how-it-works/
 
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
-<div class="odin__page-head">
+<div class="ocs__stack odin__page-head">
   <h1 data-odin-text="page.title"></h1>
 </div>
-<div class="odin__pair">
+<div class="ocs__split">
   <div class="ocs__stack">
     <p class="ocs__lead" data-odin-text="sections.how_it_works.text"></p>
     <p data-odin-text="site.notice"></p>
@@ -17,7 +17,7 @@ permalink: /how-it-works/
     <img class="odin__photo" data-odin-src="sections.how_it_works.image" data-odin-alt="sections.how_it_works.image_alt">
   </figure>
 </div>
-<div class="odin__pair">
+<div class="ocs__split">
   <figure>
     <img class="odin__photo" data-odin-src="sections.features.image" data-odin-alt="sections.features.image_alt">
   </figure>

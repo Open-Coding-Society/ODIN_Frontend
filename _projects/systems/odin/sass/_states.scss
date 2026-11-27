@@ -2,9 +2,8 @@
 // are the interface's own (data/ui.yml).
 
 .odin {
+  // The markup stacks a message's lines with the shared ocs__stack.
   .odin__status {
-    @include odin-flow;
-
     max-width: 34rem;
     padding: $odin-space-section 0;
 
