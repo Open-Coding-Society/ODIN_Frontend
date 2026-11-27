@@ -1,0 +1,25 @@
+// What a page shows while its content loads, and when the content cannot be loaded. The words
+// are the interface's own (data/ui.yml).
+
+.odin {
+  .odin__status {
+    @include odin-flow;
+
+    max-width: 34rem;
+    padding: $odin-space-section 0;
+
+    // A message about the page, not the page's title
+    h1 {
+      font-size: $odin-text-heading;
+    }
+  }
+
+  .odin__status-text {
+    color: var(--odin-quiet);
+  }
+
+  // The page takes the keyboard's focus after a retry. It is not a control, so it shows no ring.
+  .odin__main:focus {
+    outline: none;
+  }
+}

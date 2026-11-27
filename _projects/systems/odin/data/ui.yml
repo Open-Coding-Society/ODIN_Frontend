@@ -1,0 +1,12 @@
+# The words of the site's own interface. They are not ODIN's content: they label controls and say
+# what the page is doing. Everything a visitor reads about ODIN comes from the backend.
+skip: "Skip to content"
+loading: "Loading"
+error_title: "This page can't load right now"
+error_text: "The site could not load its content. Please try again in a moment."
+retry: "Try again"
+noscript: "This site needs JavaScript to load its content."
+menu: "Site menu"
+footer_menu: "Footer links"
+instagram: "Instagram"
+linkedin: "LinkedIn"

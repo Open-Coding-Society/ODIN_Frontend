@@ -1,0 +1,21 @@
+// Styles for the ODIN Diagnostics website (_projects/systems/odin).
+//
+// The build copies this folder to _sass/projects/odin/, and _sass/open-coding/_main.scss pulls
+// every project in through _sass/projects/_all.scss. So these rules are part of the site-wide
+// stylesheet, and they are compiled before the theme and the shared elements. Two things follow:
+//
+// - Every selector here starts with `.odin`, the class on the page's html element, or is an
+//   `.odin__` block. Nothing here styles another page.
+// - A rule here loses to a later shared rule of the same weight. Where the site-wide stylesheet
+//   styles a bare tag (h1, p, a, img), the rule here is `.odin tag`, which is heavier and wins.
+
+// The generated entry point (assets/css/projects/odin/main.scss) compiles this file on its own,
+// so the shared scale is imported here. It declares variables and mixins only and emits no CSS.
+@import "open-coding/mixins/variables";
+
+@import "tokens";
+@import "base";
+@import "states";
+@import "frame";
+@import "content";
+@import "home";

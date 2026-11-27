@@ -1,0 +1,147 @@
+// ODIN's tokens. This is the only file in the kit that names a colour or a typeface.
+//
+// The three colours come from ODIN's own material: the white of the headset, the black of the
+// logo and the green of the lit lens. They are defaults, not fixed values. A visitor who picks a
+// theme gets that theme everywhere: the block that sets them steps aside when a theme is active,
+// and every other rule in the kit reads the scoped aliases below, never a colour.
+
+$odin-paper: #ffffff;
+$odin-ink: #101319;
+// The lit lens in ODIN's hero photo has a hue of 145 degrees. This is that hue, darkened until
+// it keeps 4.5 to 1 on the page and on a tinted panel (tests/sass.test.mjs checks both).
+$odin-signal: #177840;
+
+$odin-font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+$odin-font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+// The sizes of type, largest first. The first is for ODIN's name at the top of the home page.
+// Every page uses these and no other.
+$odin-text-name: clamp(3rem, 9vw, 6.5rem);
+$odin-text-title: clamp(2.25rem, 6vw, 4rem);
+// A figure in a list: larger than a heading, and small enough for a long number to stay on one
+// line in its column.
+$odin-text-figure: clamp(1.75rem, 3.6vw, 2.75rem);
+$odin-text-heading: clamp(1.5rem, 3vw, 2rem);
+$odin-text-subheading: 1.25rem;
+$odin-text-body: 1.0625rem;
+$odin-text-caption: 0.875rem;
+
+// The widest the page's column runs, the widest a line of reading text runs, and the space kept
+// at the column's sides.
+$odin-page-width: 72rem;
+$odin-line-width: 40rem;
+$odin-gutter: clamp(1.25rem, 4vw, 3rem);
+
+// Small gaps come from the shared OCS scale (open-coding/mixins/_variables.scss).
+$odin-gap-tight: $spacing-xxs;
+$odin-gap: $spacing-md;
+// The space between the blocks of a page, from the shared scale, and the space above and below a
+// whole section. The shared scale stops at 30px, so the larger one is the kit's own.
+$odin-space-block: $spacing-xl;
+$odin-space-section: clamp(3.5rem, 8vw, 6rem);
+
+// ODIN's defaults, for a visitor who has not picked a theme. They are written into the site's own
+// theme variables, so the shared OCS elements (buttons, inputs, callouts) take them too. The
+// shades the elements read are mixed from the same three colours.
+html.odin:not(.user-theme-active) {
+  --pref-bg-color: #{$odin-paper};
+  --pref-text-color: #{$odin-ink};
+  --pref-accent-color: #{$odin-signal};
+  --pref-success-color: #{$odin-signal};
+  --pref-font-family: #{$odin-font-body};
+  --pref-font-size: 16px;
+  --panel: color-mix(in srgb, var(--pref-text-color) 4%, var(--pref-bg-color));
+  --panel-mid: color-mix(in srgb, var(--pref-text-color) 8%, var(--pref-bg-color));
+  --ui-bg: color-mix(in srgb, var(--pref-text-color) 6%, var(--pref-bg-color));
+  --ui-border: color-mix(in srgb, var(--pref-text-color) 16%, var(--pref-bg-color));
+  --field-border: color-mix(in srgb, var(--pref-text-color) 45%, var(--pref-bg-color));
+  --text-muted: color-mix(in srgb, var(--pref-text-color) 68%, var(--pref-bg-color));
+  --odin-font-display: #{$odin-font-display};
+}
+
+// The names every other rule in the kit uses. Each one is the theme's text or accent, or the text
+// mixed into the theme's background, so the page reads in any theme.
+.odin {
+  --odin-paper: var(--pref-bg-color);
+  --odin-ink: var(--pref-text-color);
+  --odin-signal: var(--pref-accent-color);
+  --odin-quiet: color-mix(in srgb, var(--odin-ink) 68%, var(--odin-paper));
+  --odin-rule: color-mix(in srgb, var(--odin-ink) 16%, var(--odin-paper));
+  --odin-tint: color-mix(in srgb, var(--odin-ink) 4%, var(--odin-paper));
+  --odin-font-body: var(--pref-font-family);
+  // A visitor's theme picks one typeface for the whole page, headings included.
+  --odin-font-display: var(--pref-font-family);
+}
+
+// The shapes a photo's space is kept in before its file arrives: a photo, and a band across the
+// page.
+$odin-shape-photo: 3 / 2;
+$odin-shape-band: 21 / 9;
+
+// Where the second of two columns starts, as a left margin for something that sits under it:
+// in a list of named facts (a quarter and three quarters), and in the home page's opening and
+// its figures (five parts and six).
+$odin-facts-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+$odin-facts-indent: calc(25% + #{$odin-space-block * 0.75});
+$odin-opening-columns: minmax(0, 5fr) minmax(0, 6fr);
+$odin-opening-indent: calc((100% - #{$odin-space-block}) * 5 / 11 + #{$odin-space-block});
+
+// The thin line between parts of a page.
+$odin-rule-line: 1px solid var(--odin-rule);
+
+// The page's column: as wide as the page width, in the middle, with the gutter kept at both
+// sides on a narrow screen. The header, the main part and the footer all sit in it.
+@mixin odin-column {
+  width: 100%;
+  max-width: $odin-page-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $odin-gutter;
+  padding-right: $odin-gutter;
+}
+
+// The display face as headings wear it: wide and heavy, with tight lines.
+@mixin odin-display-type {
+  font-family: var(--odin-font-display);
+  font-stretch: 125%;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+// Rules for a screen wider than a tablet held upright.
+@mixin odin-wide {
+  @media (min-width: $breakpoint-mobile + 1px) {
+    @content;
+  }
+}
+
+// Rules for a screen no wider than a tablet held upright, where side by side becomes one under
+// the other.
+@mixin odin-narrow {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+// Things one under another with the same gap between them, and none above the first.
+@mixin odin-flow($gap: $odin-gap) {
+  > * + * {
+    margin-top: $gap;
+  }
+}
+
+// A list that is a row or a column of links, not bullet points.
+@mixin odin-plain-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// One ring, on everything that takes keyboard focus.
+@mixin odin-focus-ring($offset: 3px) {
+  &:focus-visible {
+    outline: 2px solid var(--odin-signal);
+    outline-offset: $offset;
+  }
+}

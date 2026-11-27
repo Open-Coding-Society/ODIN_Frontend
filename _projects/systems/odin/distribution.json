@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "source": "pages",
+      "destination": "navigation/projects/odin"
+    },
+    {
+      "source": "layouts",
+      "destination": "_layouts/projects/odin"
+    },
+    {
+      "source": "data",
+      "destination": "_data/projects/odin"
+    },
+    {
+      "source": "js",
+      "destination": "assets/js/projects/odin"
+    },
+    {
+      "source": "sass",
+      "destination": "_sass/projects/odin"
+    }
+  ]
+}

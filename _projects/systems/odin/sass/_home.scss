@@ -1,0 +1,44 @@
+// The home page's own parts: its opening, and where its text sits under the figures.
+
+.odin {
+  // What ODIN is on one side, the headset on the other. On a narrow screen the photo goes under
+  // the words.
+  .odin__opening {
+    display: grid;
+    grid-template-columns: $odin-opening-columns;
+    align-items: center;
+    gap: $odin-space-block;
+    padding: $odin-space-section 0;
+
+    @include odin-narrow {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .odin__opening-words {
+    @include odin-flow;
+
+    // The name is the largest thing on the site. A longer one breaks where it must.
+    h1 {
+      font-size: $odin-text-name;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  // The short line above the name. Plain small type, not a badge.
+  .odin__overline {
+    font-size: $odin-text-caption;
+    font-weight: 500;
+  }
+
+  // Under the opening, text starts where the photo and the figures' second column start.
+  .odin__opening ~ .odin__section {
+    .odin__prose,
+    .odin__onward,
+    .odin__aside {
+      @include odin-wide {
+        margin-left: $odin-opening-indent;
+      }
+    }
+  }
+}

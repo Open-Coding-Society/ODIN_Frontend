@@ -1,0 +1,182 @@
+// The parts a page's own content is built from. The contact page is the first to use them.
+
+.odin {
+  // A page's title and the line under it.
+  .odin__page-head {
+    @include odin-flow;
+
+    max-width: $odin-line-width;
+    padding: $odin-space-section 0 $odin-space-block;
+  }
+
+  // The shared lead, a size up, for the one line under a page's title.
+  .ocs__lead {
+    font-size: $odin-text-subheading;
+    line-height: 1.45;
+  }
+
+  // A photo. It fills the width it is given. A photo's own shape is used once its file arrives;
+  // until then its space is kept in a usual photo's shape. The wide variant is a band across the
+  // page, cut to that shape around the photo's middle on a wide screen.
+  .odin__photo {
+    width: 100%;
+    aspect-ratio: auto $odin-shape-photo;
+
+    &--wide {
+      aspect-ratio: $odin-shape-band;
+      object-fit: cover;
+
+      @include odin-narrow {
+        aspect-ratio: $odin-shape-photo;
+      }
+    }
+  }
+
+  // Running text: a line no longer than reads well, with a gap between paragraphs and a
+  // section's space above. On a wide screen it starts where the facts of a list start: a
+  // quarter of the way across, past the gap between a list's two columns.
+  .odin__prose {
+    @include odin-flow;
+
+    max-width: $odin-line-width;
+    padding: $odin-space-section 0 0;
+
+    @include odin-wide {
+      margin-left: $odin-facts-indent;
+    }
+  }
+
+  // A part of a page with its own heading, set off by a rule with a section's space under it.
+  // Inside one the running text starts at once, under the heading's gap.
+  .odin__section {
+    @include odin-flow($odin-space-block);
+
+    padding: $odin-space-section 0 0;
+    border-top: $odin-rule-line;
+
+    .odin__prose {
+      padding-top: 0;
+    }
+  }
+
+  .odin__section + .odin__section {
+    margin-top: $odin-space-section;
+  }
+
+  // The way on from the end of a page to the next one, under the text it follows.
+  .odin__onward {
+    font-weight: 500;
+  }
+
+  // A line that belongs to what is above it, such as where a list's figures come from.
+  .odin__aside {
+    font-size: $odin-text-caption;
+  }
+
+  // Two things side by side, such as a photo and what is said about it. Each takes half the
+  // page, and on a narrow screen the second goes under the first, no wider than a line of
+  // reading text. A pair after another pair keeps a section's space above it. The shared
+  // ocs__split is not used: it stretches both sides to one height and brings its own margin.
+  .odin__pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: $odin-space-block;
+
+    @include odin-narrow {
+      grid-template-columns: minmax(0, 1fr);
+
+      > * {
+        max-width: $odin-line-width;
+      }
+    }
+
+    // Half a page is too narrow for a name beside its fact, so the fact goes under its name.
+    .odin__fact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .odin__pair + .odin__pair {
+    margin-top: $odin-space-section;
+  }
+
+  // Named facts, one to a row with a thin rule above: the name on the left, the fact beside it.
+  // On a narrow screen the fact goes under its name.
+  .odin__facts {
+    border-bottom: $odin-rule-line;
+  }
+
+  .odin__fact {
+    display: grid;
+    grid-template-columns: $odin-facts-columns;
+    align-items: baseline;
+    gap: $odin-gap-tight $odin-space-block;
+    padding: $odin-gap 0;
+    border-top: $odin-rule-line;
+
+    @include odin-narrow {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    // The label steps back by its size, not its colour: a visitor's theme does not recolour a
+    // dt, and the quiet shade of some themes is too faint for small type.
+    dt {
+      color: var(--odin-ink);
+      font-size: $odin-text-caption;
+      font-weight: 500;
+    }
+
+    dd {
+      margin: 0;
+      font-size: $odin-text-subheading;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  // Figures: the number is the name of the fact, set large in the display face, and what it
+  // counts is beside it. The shared ocs__stats is not used: it puts each figure in a centred,
+  // bordered box with a small capital label.
+  .odin__facts--figures {
+    .odin__fact {
+      grid-template-columns: $odin-opening-columns;
+
+      @include odin-narrow {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    dt {
+      @include odin-display-type;
+
+      font-size: $odin-text-figure;
+      overflow-wrap: anywhere;
+    }
+
+    dd {
+      font-size: $odin-text-body;
+    }
+  }
+
+  // Another organisation's logo, which links to its site. The link is as big as the logo and no
+  // bigger.
+  .odin__partner {
+    padding: $odin-space-block 0 0;
+
+    a {
+      display: inline-block;
+    }
+  }
+
+  // The space is kept before the file arrives, so the footer does not jump.
+  .odin__partner-logo {
+    width: 7.5rem;
+    aspect-ratio: auto 1 / 1;
+  }
+
+  // The one logo the backend has is drawn in white on a clear ground, so on a light ground it is
+  // turned dark. A logo in colour would need its own file for each ground from the backend.
+  &[data-odin-tone="light"] .odin__partner-logo {
+    filter: invert(1);
+  }
+}

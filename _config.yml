@@ -14,13 +14,172 @@
 #   in _config.yml. It will appear in your document head meta (for Google search
 #   results) and in your feed.xml site description.
 
-title: Open Coding 
-description: "Class of 2026"
+title: ODIN Diagnostics
 owner_name: John Mortensen
-github_username: jm1021 
-github_repo: "portfolio" 
-baseurl: "/portfolio" 
+github_username: Open-Coding-Society
+github_repo: "ODIN_Frontend"
+baseurl: "/ODIN_Frontend" 
 future: true
+
+# The ODIN site's own settings, read by _projects/systems/odin.
+odin:
+  # Each page's address, by the name the backend gives the page. The backend sends every word a
+  # visitor reads, the menu's included. This list only says where each page lives on this site,
+  # so adding a page to the menu means one line here and a page file, with no HTML to edit.
+  routes:
+    home: "/"
+    how_it_works: "/how-it-works/"
+    about: "/about/"
+    contact: "/contact/"
+    not_found: "/404.html"
+
+# What Jekyll leaves out of the built site. This repo began as the OCS portfolio template, which
+# also holds the template's own pages, lessons, games and media. ODIN's site is its own pages
+# (navigation/projects/odin), the stylesheet and the scripts, so the rest is not published.
+# The files stay in the repo, untouched, so an upstream sync still applies. The first seven
+# lines are Jekyll's own defaults, which a list here replaces.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  # Tooling and notes
+  - venv
+  - scripts
+  - tests
+  - Makefile
+  - requirements.txt
+  - Gemfile_Patch.rb
+  - README.md
+  - README4YML.md
+  - LICENSE
+  - _projects
+  # The template's pages
+  - navigation/blog.md
+  - navigation/signup.md
+  - navigation/users.md
+  - navigation/authentication
+  - navigation/toolkit
+  - _posts
+  - _notebooks
+  - hacks
+  - linuxcyberA
+  - git
+  - exam-predictor.html
+  - exercisegraphs.html
+  - grade-predictor.html
+  - newsignup.html
+  - scorepredictor.html
+  - study-tracker.html
+  - testing.html
+  - login.css
+  # The template's own scripts and styles. ODIN's pages load assets/js/api/config.js,
+  # assets/js/user-preferences.js, the kit's scripts and the one stylesheet, and nothing else here.
+  - assets/js/FooterOverride.js
+  - assets/js/GameEnginev1
+  - assets/js/GameEnginev1.1
+  - assets/js/aesthetihawk
+  - assets/js/bigsix
+  - assets/js/block-unlock
+  - assets/js/blogs
+  - assets/js/capstone
+  - assets/js/chat
+  - assets/js/chatbot.js
+  - assets/js/code-runner-analytics.js
+  - assets/js/course-entry.js
+  - assets/js/course-navigation-state.js
+  - assets/js/crypto
+  - assets/js/csa-lessons
+  - assets/js/digitalFamine
+  - assets/js/fortuneFinders
+  - assets/js/games-directory-search.js
+  - assets/js/gist-connection-errors.js
+  - assets/js/gist-export-button.js
+  - assets/js/gist.js
+  - assets/js/grading-module.js
+  - assets/js/help-video.js
+  - assets/js/javaUI
+  - assets/js/kanban-board.js
+  - assets/js/keyboard-shortcuts.js
+  - assets/js/layer.js
+  - assets/js/lesson-completion-bigsix.js
+  - assets/js/lesson-completion.js
+  - assets/js/lessonbase.js
+  - assets/js/lessonbasecapture.js
+  - assets/js/logicGateGame
+  - assets/js/mcq-runner.js
+  - assets/js/mini-lesson
+  - assets/js/murderMystery
+  - assets/js/new-capstone.js
+  - assets/js/nitd_rpg
+  - assets/js/ocs-analytics-dashboard.js
+  - assets/js/ocs-analytics-enhanced.js
+  - assets/js/ocs-analytics-tracker.js
+  - assets/js/pages
+  - assets/js/platformer3x
+  - assets/js/player.js
+  - assets/js/profile
+  - assets/js/runner-io.js
+  - assets/js/runner-submission.js
+  - assets/js/search-data.json
+  - assets/js/search.js
+  - assets/js/simulations.js
+  - assets/js/solitaire
+  - assets/js/spaceColony
+  - assets/js/submissions
+  - assets/js/three.r119.min.js
+  - assets/js/vanta.birds.min.js
+  - assets/js/vanta.halo.min.js
+  - assets/js/vanta.net.min.js
+  - assets/js/vanta.rings.min.js
+  - assets/js/vendor
+  - assets/js/api/dm-notifications.js
+  - assets/js/api/gemini-examples.js
+  - assets/js/api/gemini.js
+  - assets/js/api/login-return.js
+  - assets/js/api/logout.js
+  - assets/js/api/microblog-rate-limit.js
+  - assets/js/api/microblog.js
+  - assets/js/api/passwordFields.js
+  - assets/js/api/passwordRules.js
+  - assets/js/api/profile.js
+  - assets/css/Aesthetihawk
+  - assets/css/certificate_overview.css
+  - assets/css/crypto.css
+  - assets/css/csp_home.css
+  - assets/css/custom-styles.css
+  - assets/css/leaderboard.css
+  - assets/css/marketEvents.css
+  - assets/css/new-capstone.css
+  - assets/css/pause-menu.css
+  - assets/css/safe-passage-board.sass
+  - assets/css/simulations.css
+  # A file the login kit leaves here when it has been built on this machine
+  - assets/js/api/reverify.js
+  # The kit's stylesheet on its own. Its rules are already in the one stylesheet.
+  - assets/css/projects
+  # The template's media and icons. ODIN's images and its icon come from the backend.
+  - images
+  - media
+  - assets/sounds
+  - assets/audio
+  - assets/pdfs
+  - assets/images
+  - assets/icons
+  - assets/badges
+  - assets/Bathroom
+  - assets/screenQueue
+  - assets/data
+  - assets/groups.json
+  - assets/capstoneguide.mp4
+  - "assets/Adobe Express - file.png"
+  - favicon.ico
+  - favicon-16x16.png
+  - favicon-32x32.png
+  - apple-touch-icon.png
 
 # Build settings
 # --------------
@@ -111,4 +270,3 @@ minima:
     - { platform: youtube, user_url: "https://www.youtube.com/@OpenCodingSociety" } 
   nav_pages:
     - navigation/projects/topics/topics.md
-    - navigation/about.md

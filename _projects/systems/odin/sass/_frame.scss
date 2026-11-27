@@ -1,0 +1,133 @@
+// What every page has around its own content: the header with the logo and the menu, and the
+// footer. Both are filled from the backend and show only when the page does.
+
+.odin {
+  // One row on a wide screen. On a narrow one the menu wraps under the logo, so every link is
+  // still on the page with nothing to open first.
+  .odin__header {
+    @include odin-column;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $odin-gap-tight $odin-space-block;
+    padding-top: $odin-gap;
+    padding-bottom: $odin-gap;
+    border-bottom: $odin-rule-line;
+  }
+
+  .odin__brand {
+    display: block;
+    flex: none;
+  }
+
+  // The backend sends two logo files. This is the one drawn all in black: the other has a white
+  // name beside a black mark, so its mark is lost on a dark ground. One black drawing can be
+  // turned white whole. Its space (19 wide to 2 tall) is kept before the file arrives.
+  .odin__logo {
+    width: auto;
+    height: 1.375rem;
+    aspect-ratio: auto 19 / 2;
+  }
+
+  &[data-odin-tone="dark"] .odin__logo {
+    filter: invert(1);
+  }
+
+  .odin__menu {
+    @include odin-plain-list;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 $odin-space-block;
+  }
+
+  // Tall enough for a thumb, whatever size of type a visitor's theme sets. The page being shown
+  // is underlined in the accent.
+  .odin__menu-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    border-bottom: 2px solid transparent;
+    color: var(--odin-ink);
+    font-size: $odin-text-caption;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--odin-ink);
+      border-bottom-color: var(--odin-rule);
+    }
+
+    &[aria-current="page"] {
+      border-bottom-color: var(--odin-signal);
+      font-weight: 600;
+    }
+  }
+
+  .odin__footer {
+    @include odin-column;
+
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: $odin-space-block;
+    margin-top: $odin-space-section;
+    padding-top: $odin-space-block;
+    padding-bottom: $odin-space-block;
+    border-top: $odin-rule-line;
+    font-size: $odin-text-caption;
+
+    @include odin-narrow {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .odin__footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $odin-gap $odin-space-block;
+  }
+
+  // The same links as the menu, in the text colour and underlined: the accent is kept for the
+  // page's one main action.
+  .odin__footer-links {
+    @include odin-plain-list;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--odin-ink);
+
+      &:hover {
+        color: var(--odin-ink);
+      }
+    }
+  }
+
+  // The notice every page carries: the device's regulatory status, in ODIN's words. It has a row
+  // of the footer to itself, at the size of the page's own text and in the text colour, so it is
+  // not passed over. Its lines run no longer than a reading line.
+  .odin__notice {
+    @include odin-flow($odin-gap-tight);
+
+    grid-column: 1 / -1;
+    padding-top: $odin-space-block;
+    border-top: $odin-rule-line;
+    font-size: $odin-text-body;
+
+    > * {
+      max-width: $odin-line-width;
+    }
+
+    h2 {
+      font-size: $odin-text-body;
+    }
+  }
+
+  .odin__footer-legal {
+    grid-column: 1 / -1;
+    color: var(--odin-quiet);
+  }
+}
